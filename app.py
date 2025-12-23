@@ -20,7 +20,11 @@ app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # -------------------- CONFIG --------------------
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///geniesugar.db")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL is not set")
+
 JWT_SECRET = os.getenv("JWT_SECRET_KEY", "change-me-in-env")
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")  # change if you want
@@ -681,9 +685,7 @@ def food_logs():
 
 
 # -------------------- INIT DB --------------------
-with app.app_context():
-    db.create_all()
-    print("✅ Database initialized!")
+
 
 if __name__ == "__main__":
     debug_mode = os.getenv("FLASK_ENV", "").lower() != "production"
