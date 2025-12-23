@@ -1,0 +1,35 @@
+# GenieSugar Backend Dependencies (Windows + Python 3.11 compatible)
+
+# Flask Framework
+Flask==3.0.2
+Flask-SQLAlchemy==3.1.1
+Flask-CORS==4.0.0
+Flask-JWT-Extended==4.5.3
+Werkzeug==3.0.3
+
+# Database (Azure SQL via ODBC)
+pyodbc==4.0.39
+
+# Environment Variables
+python-dotenv==1.0.1
+
+# Email Service (SendGrid)
+sendgrid==6.11.0
+
+# SMS Service (Twilio)
+twilio==8.10.3
+
+# HTTP Requests
+requests==2.32.3
+
+# AI Integration
+openai==1.52.0
+
+# Date/Time Handling
+python-dateutil==2.9.0.post0
+
+# Security
+cryptography==42.0.5
+
+# Windows-friendly deployment (replaces gunicorn)
+waitress==3.0.0
