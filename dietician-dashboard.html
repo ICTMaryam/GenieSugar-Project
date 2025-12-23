@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dietitian Dashboard - GenieSugar</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --primary-blue: #1565A6;
+            --secondary-blue: #2196F3;
+            --light-blue: #E3F2FD;
+            --green: #4CAF50;
+            --light-green: #E8F5E9;
+            --orange: #FF9800;
+            --light-orange: #FFF3E0;
+            --purple: #7B1FA2;
+            --light-purple: #F3E5F5;
+            --red: #FF6B6B;
+            --light-red: #FFEBEE;
+            --text-dark: #333;
+            --text-medium: #666;
+            --text-light: #999;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --border: #e0e0e0;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 20px rgba(0,0,0,0.15);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        body {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        .dashboard-wrapper {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-navbar {
+            grid-column: 2;
+            background: var(--white);
+            padding: 0 30px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .navbar-left .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .logo svg {
+            flex-shrink: 0;
+        }
+
+        .badge-pro {
+            background: var(--light-green);
+            color: var(--green);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            transition: background 0.3s;
+        }
+
+        .user-menu:hover {
+            background: var(--light-blue);
+        }
+
+        .user-menu img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-medium);
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .btn-icon:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--red);
+            color: white;
+            font-size: 11px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-column: 1;
+            grid-row: 1 / span 2;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 25px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 0 20px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: var(--text-medium);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: all 0.3s;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .menu-item:hover {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .badge-count {
+            margin-left: auto;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-alert {
+            margin-left: auto;
+            background: var(--light-red);
+            color: var(--red);
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 20px 0;
+        }
+
+        /* Main Content */
+        .dashboard-content {
+            grid-column: 2;
+        }
+
+        .main-area {
+            padding: 30px;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-header h1 {
+            font-size: 28px;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .section-header p {
+            color: var(--text-medium);
+            font-size: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        .btn-danger {
+            background: var(--red);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--orange);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--green);
+            color: white;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+            border-top: 4px solid var(--primary-blue);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .kpi-label {
+            font-size: 14px;
+            color: var(--text-medium);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .kpi-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .kpi-icon.blue { background: var(--light-blue); color: var(--primary-blue); }
+        .kpi-icon.green { background: var(--light-green); color: var(--green); }
+        .kpi-icon.orange { background: var(--light-orange); color: var(--orange); }
+        .kpi-icon.purple { background: var(--light-purple); color: var(--purple); }
+
+        .kpi-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .kpi-footer {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .trend {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .trend.positive {
+            background: var(--light-green);
+            color: var(--green);
+        }
+
+        .trend.negative {
+            background: var(--light-red);
+            color: var(--red);
+        }
+
+        .trend.neutral {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-card.large {
+            grid-column: span 2;
+        }
+
+        .chart-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-header h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .chart-header select {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--white);
+            color: var(--text-dark);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .chart-header select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-medium);
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* Tables */
+        .table-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .table-header h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: var(--light-blue);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-blue);
+            font-size: 14px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .data-table tr:hover {
+            background: var(--light-blue);
+        }
+
+        .patient-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .patient-cell img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-success {
+            background: var(--light-green);
+            color: var(--green);
+        }
+
+        .badge-warning {
+            background: var(--light-orange);
+            color: var(--orange);
+        }
+
+        .badge-danger {
+            background: var(--light-red);
+            color: var(--red);
+        }
+
+        /* Alert Card */
+        .alert-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .alert-card.critical {
+            border-left: 6px solid var(--red);
+            background: linear-gradient(135deg, var(--light-red) 0%, var(--white) 100%);
+        }
+
+        .alert-icon {
+            font-size: 28px;
+            color: var(--red);
+            flex-shrink: 0;
+        }
+
+        .alert-content h4 {
+            font-size: 18px;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .alert-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .patient-name {
+            font-weight: 600;
+            min-width: 150px;
+        }
+
+        .alert-reason {
+            flex: 1;
+            color: var(--text-medium);
+        }
+
+        /* Search Box */
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--white);
+            padding: 10px 15px;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--border);
+            width: 300px;
+        }
+
+        .search-box i {
+            color: var(--text-light);
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        /* Patient Cards Grid */
+        .patients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .patient-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .patient-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .patient-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .patient-card-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .patient-card-header h4 {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .patient-card-header small {
+            color: var(--text-medium);
+            font-size: 13px;
+        }
+
+        .patient-status {
+            margin-left: auto;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: var(--light-green);
+            color: var(--green);
+        }
+
+        .status-warning {
+            background: var(--light-orange);
+            color: var(--orange);
+        }
+
+        .status-danger {
+            background: var(--light-red);
+            color: var(--red);
+        }
+
+        .patient-card-body {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .patient-stat {
+            text-align: center;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+        }
+
+        .patient-stat span {
+            display: block;
+            color: var(--text-medium);
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .patient-stat strong {
+            display: block;
+            font-size: 18px;
+            color: var(--primary-blue);
+        }
+
+        .patient-card-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        /* Vitals Monitoring */
+        .monitoring-dashboard {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .vitals-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .vitals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .vital-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            background: var(--bg-light);
+            transition: all 0.3s;
+        }
+
+        .vital-item:hover {
+            background: var(--light-blue);
+            transform: translateY(-3px);
+        }
+
+        .vital-label {
+            color: var(--text-medium);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .vital-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+
+        .vital-trend {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* Time Range Buttons */
+        .time-range {
+            display: flex;
+            gap: 10px;
+        }
+
+        .time-range .btn {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .time-range .btn.active {
+            background: var(--primary-blue);
+            color: var(--white);
+        }
+
+        /* Appointments Timeline */
+        .appointments-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .appointment-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .appointment-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .appointment-time {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-blue);
+            min-width: 80px;
+        }
+
+        .appointment-details {
+            flex: 1;
+        }
+
+        .appointment-details h5 {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .appointment-details p {
+            color: var(--text-medium);
+            font-size: 14px;
+        }
+
+        .status-confirmed {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .status-pending {
+            color: var(--orange);
+            font-weight: 600;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Notification Panel */
+        .notification-panel {
+            position: fixed;
+            top: 70px;
+            right: -350px;
+            width: 350px;
+            height: calc(100vh - 70px);
+            background: var(--white);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .notification-panel.show {
+            right: 0;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .notification-header h4 {
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+            transition: all 0.3s;
+        }
+
+        .notification-item:hover {
+            background: var(--light-blue);
+        }
+
+        .notification-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-content strong {
+            display: block;
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .notification-content p {
+            font-size: 13px;
+            color: var(--text-medium);
+            margin-bottom: 5px;
+        }
+
+        .notification-content small {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .text-success { color: var(--green); }
+        .text-danger { color: var(--red); }
+        .text-warning { color: var(--orange); }
+        .text-info { color: var(--primary-blue); }
+
+        /* Analysis Grid */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .stat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-row span {
+            color: var(--text-medium);
+            font-size: 14px;
+        }
+
+        .stat-row strong {
+            font-size: 16px;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        /* Meal Plans Grid */
+        .meal-plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .meal-plan-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .meal-plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .meal-plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .meal-plan-title {
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .meal-plan-type {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: var(--light-green);
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .meal-plan-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-medium);
+            font-size: 14px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 15px;
+        }
+
+        .meal-plan-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid var(--border);
+        }
+
+        .compliance-rate {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .progress-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: conic-gradient(var(--green) 75%, var(--border) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-circle span {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--green);
+            background: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .top-navbar {
+                grid-column: 1;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .patients-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-area {
+                padding: 20px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .header-actions {
+                flex-wrap: wrap;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .alert-item {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .patient-card-body {
+                grid-template-columns: 1fr;
+            }
+            
+            .vitals-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .appointment-item {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .notification-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .top-navbar {
+                padding: 0 15px;
+            }
+            
+            .navbar-left .logo {
+                font-size: 16px;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+            
+            .kpi-value {
+                font-size: 28px;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- Top Navigation -->
+        <nav class="top-navbar">
+            <div class="navbar-left">
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 40 40">
+                        <circle cx="20" cy="20" r="18" fill="#1565A6"/>
+                        <circle cx="30" cy="30" r="6" fill="#FF6B6B"/>
+                    </svg>
+                    <span>GenieSugar</span>
+                    <span class="badge-pro">Dietitian</span>
+                </div>
+            </div>
+            <div class="navbar-right">
+                <button class="btn btn-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="user-menu">
+                    <img src="https://ui-avatars.com/api/?name=Maya+Nutrition&background=4CAF50&color=fff" alt="Dietitian">
+                    <div class="user-info">
+                        <span class="user-name" id="dietitianName">Maya Hassan</span>
+                        <span class="user-role">Clinical Dietitian</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-menu">
+                <a href="#" class="menu-item active" onclick="showSection('overview')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard Overview</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('patients')">
+                    <i class="fas fa-user-injured"></i>
+                    <span>My Patients</span>
+                    <span class="badge-count">18</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('nutrition')">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Nutrition Analysis</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('meals')">
+                    <i class="fas fa-utensils"></i>
+                    <span>Meal Plans</span>
+                    <span class="badge-count">42</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('appointments')">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Appointments</span>
+                    <span class="badge-count">5</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('reports')">
+                    <i class="fas fa-file-medical-alt"></i>
+                    <span>Nutrition Reports</span>
+                </a>
+                <a href="#" class="menu-item" onclick="showSection('education')">
+                    <i class="fas fa-book"></i>
+                    <span>Education Library</span>
+                </a>
+                <div class="menu-divider"></div>
+                <a href="#" class="menu-item" onclick="showSection('alerts')">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Diet Alerts</span>
+                    <span class="badge-alert">4</span>
+                </a>
+                <a href="#" class="menu-item" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-area">
+            <!-- Overview Section -->
+            <div id="overviewSection" class="content-section active">
+                <div class="section-header">
+                    <div>
+                        <h1><i class="fas fa-chart-line"></i> Nutrition Dashboard</h1>
+                        <p>Welcome back! Here's your patients' nutrition overview for today</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-outline" onclick="quickNutritionCheck()">
+                            <i class="fas fa-bolt"></i> Quick Check
+                        </button>
+                        <button class="btn btn-primary" onclick="createMealPlan()">
+                            <i class="fas fa-plus"></i> Create Meal Plan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Active Patients</span>
+                            <div class="kpi-icon blue">
+                                <i class="fas fa-user-injured"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">18</div>
+                        <div class="kpi-footer">
+                            <span class="trend positive">+3 this month</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Meal Plans Created</span>
+                            <div class="kpi-icon green">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">42</div>
+                        <div class="kpi-footer">
+                            <span class="trend neutral">This month</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Avg Compliance Rate</span>
+                            <div class="kpi-icon orange">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">78%</div>
+                        <div class="kpi-footer">
+                            <span class="trend positive">+5% improvement</span>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-label">Reviews This Week</span>
+                            <div class="kpi-icon purple">
+                                <i class="fas fa-file-medical-alt"></i>
+                            </div>
+                        </div>
+                        <div class="kpi-value">24</div>
+                        <div class="kpi-footer">
+                            <span class="trend neutral">6 pending</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-line"></i> Patient Nutrition Compliance</h3>
+                            <select onchange="updateComplianceChart(this.value)">
+                                <option value="7">Last 7 days</option>
+                                <option value="30">Last 30 days</option>
+                                <option value="90">Last 90 days</option>
+                            </select>
+                        </div>
+                        <canvas id="complianceChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> Macronutrient Distribution</h3>
+                        </div>
+                        <canvas id="macroChart"></canvas>
+                        <div class="legend">
+                            <div class="legend-item">
+                                <span class="dot" style="background: #4CAF50;"></span>
+                                <span>Protein (30%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="dot" style="background: #2196F3;"></span>
+                                <span>Carbs (45%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="dot" style="background: #FFC107;"></span>
+                                <span>Fats (25%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Patient Food Logs -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-history"></i> Recent Patient Food Logs</h3>
+                        <button class="btn btn-sm" onclick="showSection('nutrition')">View All</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Patient</th>
+                                <th>Meal</th>
+                                <th>Calories</th>
+                                <th>Carbs</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="patient-cell">
+                                        <img src="https://ui-avatars.com/api/?name=Sarah+Ahmed&background=1565A6&color=fff" alt="">
+                                        <div>
+                                            <strong>Sarah Ahmed</strong>
+                                            <small>Type 2, 45y</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Oatmeal with berries</td>
+                                <td>250 kcal</td>
+                                <td>45g</td>
+                                <td>2h ago</td>
+                                <td><span class="badge badge-success">Good</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline" onclick="reviewFoodLog(1)">
+                                        <i class="fas fa-eye"></i> Review
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="patient-cell">
+                                        <img src="https://ui-avatars.com/api/?name=John+Smith&background=1565A6&color=fff" alt="">
+                                        <div>
+                                            <strong>John Smith</strong>
+                                            <small>Type 1, 32y</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Grilled chicken salad</td>
+                                <td>380 kcal</td>
+                                <td>25g</td>
+                                <td>4h ago</td>
+                                <td><span class="badge badge-success">Excellent</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline" onclick="reviewFoodLog(2)">
+                                        <i class="fas fa-eye"></i> Review
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="patient-cell">
+                                        <img src="https://ui-avatars.com/api/?name=Lisa+Brown&background=1565A6&color=fff" alt="">
+                                        <div>
+                                            <strong>Lisa Brown</strong>
+                                            <small>Gestational, 28y</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Pizza (2 slices)</td>
+                                <td>640 kcal</td>
+                                <td>75g</td>
+                                <td>5h ago</td>
+                                <td><span class="badge badge-warning">Review</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning" onclick="reviewFoodLog(3)">
+                                        <i class="fas fa-edit"></i> Advise
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="patient-cell">
+                                        <img src="https://ui-avatars.com/api/?name=Mohammed+Hassan&background=1565A6&color=fff" alt="">
+                                        <div>
+                                            <strong>Mohammed Hassan</strong>
+                                            <small>Type 2, 58y</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Fruit smoothie</td>
+                                <td>320 kcal</td>
+                                <td>55g</td>
+                                <td>1h ago</td>
+                                <td><span class="badge badge-success">Good</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline" onclick="reviewFoodLog(4)">
+                                        <i class="fas fa-eye"></i> Review
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Diet Alerts -->
+                <div class="alert-card critical">
+                    <div class="alert-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="alert-content">
+                        <h4>Diet Compliance Alerts</h4>
+                        <div class="alert-list">
+                            <div class="alert-item">
+                                <span class="patient-name">John Smith</span>
+                                <span class="alert-reason">Exceeded carb limit (75g vs 60g max)</span>
+                                <button class="btn btn-sm btn-danger">Review Now</button>
+                            </div>
+                            <div class="alert-item">
+                                <span class="patient-name">Fatima Ahmed</span>
+                                <span class="alert-reason">Missed 2 consecutive meals</span>
+                                <button class="btn btn-sm btn-warning">Check-in</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Patients Section -->
+            <div id="patientsSection" class="content-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-user-injured"></i> My Patients</h1>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search patients by name or condition..." onkeyup="searchPatients(this.value)">
+                    </div>
+                </div>
+                <div class="patients-grid" id="patientsContainer">
+                    <!-- Patient cards will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Nutrition Analysis Section -->
+            <div id="nutritionSection" class="content-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-apple-alt"></i> Nutrition Analysis</h1>
+                    <button class="btn btn-primary" onclick="generateNutritionReport()">
+                        <i class="fas fa-file-export"></i> Export Report
+                    </button>
+                </div>
+                
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-bar"></i> Calorie Intake Distribution</h3>
+                            <select>
+                                <option>Weekly</option>
+                                <option>Monthly</option>
+                            </select>
+                        </div>
+                        <canvas id="calorieChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-balance-scale"></i> Meal Timing Analysis</h3>
+                        </div>
+                        <canvas id="timingChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="analysis-grid">
+                    <div class="card">
+                        <h3>📊 Weekly Nutrition Averages</h3>
+                        <div class="stat-list">
+                            <div class="stat-row">
+                                <span>Average Daily Calories</span>
+                                <strong>1,850 kcal</strong>
+                            </div>
+                            <div class="stat-row">
+                                <span>Average Carbohydrates</span>
+                                <strong>210g</strong>
+                            </div>
+                            <div class="stat-row">
+                                <span>Average Protein</span>
+                                <strong>95g</strong>
+                            </div>
+                            <div class="stat-row">
+                                <span>Average Fats</span>
+                                <strong>65g</strong>
+                            </div>
+                            <div class="stat-row">
+                                <span>Average Fiber</span>
+                                <strong>28g</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>🏆 Top Compliance Patients</h3>
+                        <div class="stat-list">
+                            <div class="stat-row">
+                                <span>Sarah Ahmed</span>
+                                <strong class="text-success">92%</strong>
+                            </div>
+                            <div class="stat-row">
+                                <span>Lisa Brown</span>
+                                <strong class="text-success">87%</strong>
+                            </div>
+                            <div class="stat-row">
+                                <span>Mohammed Hassan</span>
+                                <strong class="text-warning">78%</strong>
+                            </div>
+                            <div class="stat-row">
+                                <span>John Smith</span>
+                                <strong class="text-warning">72%</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meal Plans Section -->
+            <div id="mealsSection" class="content-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-utensils"></i> Meal Plans Management</h1>
+                    <button class="btn btn-primary" onclick="createMealPlan()">
+                        <i class="fas fa-plus"></i> Create New Plan
+                    </button>
+                </div>
+
+                <div class="meal-plans-grid" id="mealPlansContainer">
+                    <!-- Meal plan cards will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Appointments Section -->
+            <div id="appointmentsSection" class="content-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-calendar-check"></i> Today's Appointments</h1>
+                    <button class="btn btn-primary" onclick="scheduleAppointment()">
+                        <i class="fas fa-plus"></i> Schedule Appointment
+                    </button>
+                </div>
+                <div class="appointments-timeline" id="appointmentsTimeline">
+                    <!-- Appointments will be loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Panel -->
+    <div id="notificationPanel" class="notification-panel">
+        <div class="notification-header">
+            <h4>Notifications</h4>
+            <button class="btn btn-icon" onclick="closeNotifications()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="notification-list">
+            <div class="notification-item">
+                <div class="notification-icon">
+                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                </div>
+                <div class="notification-content">
+                    <strong>High Carb Alert</strong>
+                    <p>John Smith exceeded carb limit by 15g</p>
+                    <small>10 minutes ago</small>
+                </div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-icon">
+                    <i class="fas fa-calendar-plus text-info"></i>
+                </div>
+                <div class="notification-content">
+                    <strong>New Appointment</strong>
+                    <p>Lisa Brown scheduled for tomorrow</p>
+                    <small>1 hour ago</small>
+                </div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-icon">
+                    <i class="fas fa-file-medical-alt text-success"></i>
+                </div>
+                <div class="notification-content">
+                    <strong>New Food Log</strong>
+                    <p>Sarah Ahmed logged breakfast</p>
+                    <small>2 hours ago</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let token = localStorage.getItem('token');
+
+        // Check authentication
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDietitianData();
+            initializeCharts();
+            loadPatients();
+            loadMealPlans();
+            loadTodayAppointments();
+        });
+
+        // Navigation functions
+        function showSection(section) {
+            event.preventDefault();
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            
+            const targetSection = document.getElementById(section + 'Section');
+            if (targetSection) {
+                targetSection.classList.add('active');
+                event.target.closest('.menu-item').classList.add('active');
+                
+                // Load section-specific data
+                switch(section) {
+                    case 'patients':
+                        loadPatients();
+                        break;
+                    case 'meals':
+                        loadMealPlans();
+                        break;
+                }
+            }
+        }
+
+        function showNotifications() {
+            document.getElementById('notificationPanel').classList.toggle('show');
+        }
+
+        function closeNotifications() {
+            document.getElementById('notificationPanel').classList.remove('show');
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        // Action functions
+        function quickNutritionCheck() {
+            alert('Starting quick nutrition check...');
+            // Implement quick check logic
+        }
+
+        function createMealPlan() {
+            window.location.href = 'meal-plan-create.html';
+        }
+
+        function scheduleAppointment() {
+            window.location.href = 'schedule-appointment.html';
+        }
+
+        function generateNutritionReport() {
+            alert('Generating nutrition report...');
+        }
+
+        function reviewFoodLog(logId) {
+            window.location.href = `food-log-review.html?id=${logId}`;
+        }
+
+        function searchPatients(query) {
+            const patients = document.querySelectorAll('.patient-card');
+            patients.forEach(patient => {
+                const name = patient.querySelector('h4').textContent.toLowerCase();
+                const condition = patient.querySelector('small').textContent.toLowerCase();
+                const searchTerm = query.toLowerCase();
+                
+                if (name.includes(searchTerm) || condition.includes(searchTerm)) {
+                    patient.style.display = 'block';
+                } else {
+                    patient.style.display = 'none';
+                }
+            });
+        }
+
+        // Data loading functions
+        function loadDietitianData() {
+            fetch(`${API_URL}/dietitians/me`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('dietitianName').textContent = data.name;
+                // Update other dietitian details
+            })
+            .catch(error => console.error('Error loading dietitian data:', error));
+        }
+
+        function loadPatients() {
+            const container = document.getElementById('patientsContainer');
+            const patients = [
+                { id: 1, name: 'Sarah Ahmed', age: 45, condition: 'Type 2 Diabetes', lastGlucose: '128 mg/dL', hba1c: '6.8%', medication: 'Metformin', compliance: 92, status: 'controlled' },
+                { id: 2, name: 'John Smith', age: 32, condition: 'Type 1 Diabetes', lastGlucose: '210 mg/dL', hba1c: '7.5%', medication: 'Insulin', compliance: 72, status: 'needs-review' },
+                { id: 3, name: 'Lisa Brown', age: 28, condition: 'Gestational Diabetes', lastGlucose: '95 mg/dL', hba1c: '5.9%', medication: 'Diet', compliance: 87, status: 'excellent' },
+                { id: 4, name: 'Mohammed Hassan', age: 58, condition: 'Type 2 Diabetes', lastGlucose: '145 mg/dL', hba1c: '7.2%', medication: 'Metformin', compliance: 78, status: 'controlled' },
+                { id: 5, name: 'Fatima Ahmed', age: 35, condition: 'Prediabetes', lastGlucose: '110 mg/dL', hba1c: '6.2%', medication: 'Lifestyle', compliance: 85, status: 'controlled' },
+                { id: 6, name: 'David Wilson', age: 50, condition: 'Type 2 Diabetes', lastGlucose: '160 mg/dL', hba1c: '7.8%', medication: 'Multiple', compliance: 65, status: 'needs-review' }
+            ];
+
+            container.innerHTML = patients.map(patient => `
+                <div class="patient-card">
+                    <div class="patient-card-header">
+                        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(patient.name)}&background=1565A6&color=fff" alt="${patient.name}">
+                        <div>
+                            <h4>${patient.name}</h4>
+                            <small>${patient.condition}, ${patient.age}y</small>
+                        </div>
+                        <span class="patient-status ${patient.status === 'controlled' ? 'status-success' : patient.status === 'excellent' ? 'status-success' : 'status-warning'}">
+                            ${patient.status.replace('-', ' ')}
+                        </span>
+                    </div>
+                    <div class="patient-card-body">
+                        <div class="patient-stat">
+                            <span>Last Glucose</span>
+                            <strong>${patient.lastGlucose}</strong>
+                        </div>
+                        <div class="patient-stat">
+                            <span>HbA1c</span>
+                            <strong>${patient.hba1c}</strong>
+                        </div>
+                        <div class="patient-stat">
+                            <span>Medication</span>
+                            <small>${patient.medication}</small>
+                        </div>
+                        <div class="patient-stat">
+                            <span>Compliance</span>
+                            <strong>${patient.compliance}%</strong>
+                        </div>
+                    </div>
+                    <div class="patient-card-footer">
+                        <button class="btn btn-sm btn-outline" onclick="viewPatientDetails(${patient.id})">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                        <button class="btn btn-sm btn-primary" onclick="messagePatient(${patient.id})">
+                            <i class="fas fa-comment"></i> Message
+                        </button>
+                        <button class="btn btn-sm btn-success" onclick="createPlanForPatient(${patient.id})">
+                            <i class="fas fa-utensils"></i> Meal Plan
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadMealPlans() {
+            const container = document.getElementById('mealPlansContainer');
+            const plans = [
+                { id: 1, title: 'Low Carb Mediterranean', type: 'Type 2 Diabetes', calories: 1800, carbs: 150, protein: 100, compliance: 85, patient: 'Sarah Ahmed' },
+                { id: 2, title: 'Insulin Adjustment Plan', type: 'Type 1 Diabetes', calories: 2200, carbs: 210, protein: 120, compliance: 72, patient: 'John Smith' },
+                { id: 3, title: 'Gestational Control', type: 'Gestational Diabetes', calories: 2000, carbs: 180, protein: 95, compliance: 87, patient: 'Lisa Brown' },
+                { id: 4, title: 'Weight Loss Plan', type: 'Prediabetes', calories: 1600, carbs: 140, protein: 90, compliance: 92, patient: 'Fatima Ahmed' },
+                { id: 5, title: 'Senior Nutrition Plan', type: 'Type 2 Diabetes', calories: 1700, carbs: 160, protein: 85, compliance: 78, patient: 'Mohammed Hassan' },
+                { id: 6, title: 'Comprehensive Diabetes Plan', type: 'Type 2 Diabetes', calories: 1900, carbs: 175, protein: 110, compliance: 65, patient: 'David Wilson' }
+            ];
+
+            container.innerHTML = plans.map(plan => `
+                <div class="meal-plan-card">
+                    <div class="meal-plan-header">
+                        <div class="meal-plan-title">${plan.title}</div>
+                        <div class="meal-plan-type">${plan.type}</div>
+                    </div>
+                    <div class="meal-plan-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Patient</span>
+                            <span class="detail-value">${plan.patient}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Daily Calories</span>
+                            <span class="detail-value">${plan.calories} kcal</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Carbohydrates</span>
+                            <span class="detail-value">${plan.carbs}g</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Protein</span>
+                            <span class="detail-value">${plan.protein}g</span>
+                        </div>
+                    </div>
+                    <div class="meal-plan-footer">
+                        <div class="compliance-rate">
+                            <div class="progress-circle" style="background: conic-gradient(#4CAF50 ${plan.compliance}%, #e0e0e0 0);">
+                                <span>${plan.compliance}%</span>
+                            </div>
+                            <span>Compliance Rate</span>
+                        </div>
+                        <div class="meal-plan-actions">
+                            <button class="btn btn-sm btn-outline" onclick="editMealPlan(${plan.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="viewMealPlan(${plan.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadTodayAppointments() {
+            const container = document.getElementById('appointmentsTimeline');
+            const appointments = [
+                { time: '09:00 AM', patient: 'Sarah Ahmed', type: 'Nutrition Follow-up', status: 'confirmed', notes: 'Review low-carb progress' },
+                { time: '11:30 AM', patient: 'John Smith', type: 'Meal Plan Adjustment', status: 'confirmed', notes: 'Adjust insulin-carb ratios' },
+                { time: '02:00 PM', patient: 'Lisa Brown', type: 'New Plan Creation', status: 'pending', notes: 'Gestational diabetes plan' },
+                { time: '04:30 PM', patient: 'Mohammed Hassan', type: 'Compliance Review', status: 'confirmed', notes: 'Weight management' }
+            ];
+
+            container.innerHTML = appointments.map(apt => `
+                <div class="appointment-item">
+                    <div class="appointment-time">${apt.time}</div>
+                    <div class="appointment-details">
+                        <h5>${apt.patient}</h5>
+                        <p>${apt.type} - <span class="status-${apt.status}">${apt.status}</span></p>
+                        <small style="color: #666;">${apt.notes}</small>
+                    </div>
+                    <div class="appointment-actions">
+                        <button class="btn btn-icon" title="Start Consultation" onclick="startConsultation('${apt.patient}')">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <button class="btn btn-icon" title="Reschedule" onclick="rescheduleAppointment(${apt.id})">
+                            <i class="fas fa-calendar-alt"></i>
+                        </button>
+                        <button class="btn btn-icon" title="View Details" onclick="viewAppointmentDetails(${apt.id})">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Chart initialization
+        function initializeCharts() {
+            // Compliance Chart
+            const complianceCtx = document.getElementById('complianceChart');
+            if (complianceCtx) {
+                new Chart(complianceCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Compliance %',
+                            data: [65, 72, 78, 75, 82, 80, 85],
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 50,
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Macronutrient Chart
+            const macroCtx = document.getElementById('macroChart');
+            if (macroCtx) {
+                new Chart(macroCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Protein', 'Carbohydrates', 'Fats'],
+                        datasets: [{
+                            data: [30, 45, 25],
+                            backgroundColor: ['#4CAF50', '#2196F3', '#FFC107'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        cutout: '70%',
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+
+            // Calorie Chart
+            const calorieCtx = document.getElementById('calorieChart');
+            if (calorieCtx) {
+                new Chart(calorieCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Breakfast', 'Lunch', 'Dinner', 'Snacks'],
+                        datasets: [{
+                            label: 'Calories',
+                            data: [450, 650, 550, 200],
+                            backgroundColor: ['#4CAF50', '#2196F3', '#FFC107', '#FF6B6B']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+
+            // Timing Chart
+            const timingCtx = document.getElementById('timingChart');
+            if (timingCtx) {
+                new Chart(timingCtx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Breakfast', 'AM Snack', 'Lunch', 'PM Snack', 'Dinner', 'Evening'],
+                        datasets: [{
+                            label: 'Ideal Timing',
+                            data: [7, 10, 13, 16, 19, 21],
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                            fill: true
+                        }, {
+                            label: 'Actual Timing',
+                            data: [8, 11, 14, 17, 20, 22],
+                            borderColor: '#2196F3',
+                            backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 24,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + ':00';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateComplianceChart(range) {
+            // This function would update the compliance chart based on the selected range
+            console.log('Updating chart for range:', range);
+        }
+
+        // Additional functions
+        function viewPatientDetails(patientId) {
+            window.location.href = `patient-details.html?id=${patientId}`;
+        }
+
+        function messagePatient(patientId) {
+            window.location.href = `messaging.html?patient=${patientId}`;
+        }
+
+        function createPlanForPatient(patientId) {
+            window.location.href = `meal-plan-create.html?patient=${patientId}`;
+        }
+
+        function editMealPlan(planId) {
+            window.location.href = `meal-plan-edit.html?id=${planId}`;
+        }
+
+        function viewMealPlan(planId) {
+            window.location.href = `meal-plan-view.html?id=${planId}`;
+        }
+
+        function startConsultation(patientName) {
+            alert(`Starting video consultation with ${patientName}...`);
+        }
+
+        function rescheduleAppointment(appointmentId) {
+            alert(`Rescheduling appointment #${appointmentId}...`);
+        }
+
+        function viewAppointmentDetails(appointmentId) {
+            window.location.href = `appointment-details.html?id=${appointmentId}`;
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const notificationPanel = document.getElementById('notificationPanel');
+            if (event.target === notificationPanel) {
+                closeNotifications();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - GenieSugar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            color: #1565A6;
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            color: #666;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .reminder-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #E8F5E9;
+            color: #2E7D32;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Main Content */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 25px;
+        }
+
+        /* Left Panel - Calendar & Time Slots */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .calendar-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .time-slots-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Right Panel - Appointments & Providers */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .appointments-section, .providers-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 20px;
+            color: #1565A6;
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        /* Calendar */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: #1565A6;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #125a96;
+            transform: scale(1.1);
+        }
+
+        .current-month {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            min-width: 180px;
+            text-align: center;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            color: #1565A6;
+            padding: 12px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            font-size: 14px;
+            font-weight: 500;
+            background: #f8f9ff;
+            border: 2px solid transparent;
+        }
+
+        .calendar-day:hover {
+            background: #e8ebff;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.selected {
+            background: #1565A6;
+            color: white;
+            font-weight: 600;
+            border-color: #1565A6;
+        }
+
+        .calendar-day.today {
+            background: #E3F2FD;
+            color: #1565A6;
+            font-weight: 600;
+        }
+
+        .calendar-day.has-appointment::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            width: 6px;
+            height: 6px;
+            background: #FF6B6B;
+            border-radius: 50%;
+        }
+
+        .calendar-day.unavailable {
+            background: #FFEBEE;
+            color: #F44336;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .calendar-day.other-month {
+            background: #f5f5f5;
+            color: #999;
+        }
+
+        /* Time Slots */
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .time-slot {
+            padding: 15px 10px;
+            background: #f8f9ff;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .time-slot:hover {
+            border-color: #1565A6;
+            transform: translateY(-2px);
+        }
+
+        .time-slot.selected {
+            background: #1565A6;
+            color: white;
+            border-color: #1565A6;
+        }
+
+        .time-slot.booked {
+            background: #FFEBEE;
+            color: #F44336;
+            cursor: not-allowed;
+            border-color: #FFCDD2;
+        }
+
+        .time-slot.peak {
+            background: #FFF3E0;
+            border-color: #FFE0B2;
+        }
+
+        .time-slot.peak.selected {
+            background: #FF9800;
+            border-color: #FF9800;
+        }
+
+        /* Appointment Cards */
+        .appointment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .appointment-card {
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            border-left: 4px solid #1565A6;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .appointment-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+
+        .appointment-card.confirmed {
+            border-left-color: #4CAF50;
+        }
+
+        .appointment-card.pending {
+            border-left-color: #FF9800;
+        }
+
+        .appointment-card.cancelled {
+            border-left-color: #F44336;
+            opacity: 0.7;
+        }
+
+        .appointment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .appointment-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .appointment-time {
+            font-size: 14px;
+            color: #1565A6;
+            font-weight: 600;
+            background: #E3F2FD;
+            padding: 4px 10px;
+            border-radius: 15px;
+        }
+
+        .appointment-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .appointment-detail {
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .appointment-reminder {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #666;
+            background: #FFF3E0;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-top: 10px;
+            width: fit-content;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Provider Cards */
+        .providers-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .provider-card {
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .provider-card:hover {
+            transform: translateX(5px);
+            border-color: #1565A6;
+        }
+
+        .provider-card.selected {
+            border-color: #1565A6;
+            background: #E3F2FD;
+        }
+
+        .provider-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #1565A6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .provider-info {
+            flex: 1;
+        }
+
+        .provider-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .provider-specialty {
+            font-size: 14px;
+            color: #1565A6;
+            margin-bottom: 4px;
+        }
+
+        .provider-availability {
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .provider-rating {
+            font-size: 12px;
+            color: #FF9800;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(21, 101, 166, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f5f7fa;
+            color: #1565A6;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            border-color: #1565A6;
+        }
+
+        .btn-danger {
+            background: #FF6B6B;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #FF5252;
+            transform: translateY(-2px);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            padding: 30px 30px 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: #1565A6;
+            font-weight: 700;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #1565A6;
+            box-shadow: 0 0 0 3px rgba(21, 101, 166, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px 30px;
+            border-top: 2px solid #f0f0f0;
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .conflict-alert {
+            background: #FFF3E0;
+            border: 2px solid #FFE0B2;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #E65100;
+        }
+
+        .conflict-alert.hidden {
+            display: none;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* Reminder Settings */
+        .reminder-settings {
+            background: #f8f9ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .reminder-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .reminder-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .right-panel {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .calendar-grid {
+                gap: 5px;
+            }
+            
+            .time-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .appointment-actions {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 3px;
+            }
+            
+            .calendar-day {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>📅 Appointment Management</h1>
+                <div class="header-subtitle">
+                    <span>Schedule appointments with your healthcare team</span>
+                    <div class="reminder-status">
+                        <span class="status-dot"></span>
+                        <span>Reminders: Active</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-primary" onclick="openScheduleModal()">
+                    <span>+ Schedule New Appointment</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-grid">
+            <!-- Left Panel -->
+            <div class="left-panel">
+                <!-- Calendar Section -->
+                <div class="calendar-section">
+                    <div class="section-title">
+                        <span>Select Date</span>
+                        <button class="btn btn-secondary btn-small" onclick="goToToday()">
+                            Today
+                        </button>
+                    </div>
+                    
+                    <div class="calendar-header">
+                        <div class="calendar-nav">
+                            <button class="nav-btn" onclick="previousMonth()">‹</button>
+                            <div class="current-month" id="currentMonth">December 2024</div>
+                            <button class="nav-btn" onclick="nextMonth()">›</button>
+                        </div>
+                        <div style="font-size: 14px; color: #666;">
+                            <span id="selectedDateDisplay">No date selected</span>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-grid" id="calendarGrid">
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                    </div>
+                </div>
+
+                <!-- Time Slots Section -->
+                <div class="time-slots-section">
+                    <div class="section-title">
+                        <span>Available Time Slots</span>
+                        <span style="font-size: 14px; color: #666; font-weight: normal;">
+                            <span id="timeSlotDate"></span>
+                        </span>
+                    </div>
+                    
+                    <div class="time-slots" id="timeSlots">
+                        <!-- Time slots will be dynamically generated -->
+                    </div>
+                    
+                    <div class="reminder-settings">
+                        <div style="font-weight: 600; color: #1565A6; margin-bottom: 10px;">Reminder Preferences</div>
+                        <div class="reminder-options">
+                            <label class="reminder-option">
+                                <input type="checkbox" checked>
+                                <span>Email (24 hours before)</span>
+                            </label>
+                            <label class="reminder-option">
+                                <input type="checkbox" checked>
+                                <span>SMS (1 hour before)</span>
+                            </label>
+                            <label class="reminder-option">
+                                <input type="checkbox">
+                                <span>Push Notification (30 min before)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="right-panel">
+                <!-- Upcoming Appointments -->
+                <div class="appointments-section">
+                    <div class="section-title">
+                        <span>Upcoming Appointments</span>
+                        <span class="badge" style="background: #E3F2FD; color: #1565A6; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
+                            3 appointments
+                        </span>
+                    </div>
+                    
+                    <div class="appointment-list" id="appointmentList">
+                        <div class="appointment-card confirmed">
+                            <div class="appointment-header">
+                                <div class="appointment-title">Dr. Sarah Wilson</div>
+                                <div class="appointment-time">10:00 AM</div>
+                            </div>
+                            <div class="appointment-details">
+                                <div class="appointment-detail">🏥 Bahrain Diabetes Center</div>
+                                <div class="appointment-detail">📋 Annual Diabetes Review</div>
+                                <div class="appointment-detail">📅 Today, Dec 15, 2024</div>
+                            </div>
+                            <div class="appointment-reminder">
+                                🔔 Reminders sent: Email (24h) • SMS (1h)
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-secondary btn-small" onclick="editAppointment(1)">
+                                    Edit
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="cancelAppointment(1)">
+                                    Cancel
+                                </button>
+                                <button class="btn btn-primary btn-small" onclick="joinVirtual(1)">
+                                    Join Virtual
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="appointment-card confirmed">
+                            <div class="appointment-header">
+                                <div class="appointment-title">Nutritionist Emily Chen</div>
+                                <div class="appointment-time">2:30 PM</div>
+                            </div>
+                            <div class="appointment-details">
+                                <div class="appointment-detail">🥗 Wellness Nutrition Center</div>
+                                <div class="appointment-detail">📋 Diet Plan Review</div>
+                                <div class="appointment-detail">📅 Dec 20, 2024</div>
+                            </div>
+                            <div class="appointment-reminder">
+                                🔔 Reminders scheduled: Email (24h) • SMS (1h)
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-secondary btn-small" onclick="editAppointment(2)">
+                                    Edit
+                                </button>
+                                <button class="btn btn-danger btn-small" onclick="cancelAppointment(2)">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="appointment-card pending">
+                            <div class="appointment-header">
+                                <div class="appointment-title">Dr. Ahmed Hassan</div>
+                                <div class="appointment-time">11:00 AM</div>
+                            </div>
+                            <div class="appointment-details">
+                                <div class="appointment-detail">🏥 Salmaniya Medical Complex</div>
+                                <div class="appointment-detail">📋 Lab Results Consultation</div>
+                                <div class="appointment-detail">📅 Dec 28, 2024</div>
+                            </div>
+                            <div class="appointment-reminder">
+                                ⏳ Waiting for confirmation
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn btn-danger btn-small" onclick="cancelAppointment(3)">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Healthcare Providers -->
+                <div class="providers-section">
+                    <div class="section-title">
+                        <span>Your Care Team</span>
+                        <button class="btn btn-secondary btn-small" onclick="manageCareTeam()">
+                            Manage
+                        </button>
+                    </div>
+                    
+                    <div class="providers-grid" id="providersGrid">
+                        <div class="provider-card selected" onclick="selectProvider(1)">
+                            <div class="provider-avatar">SW</div>
+                            <div class="provider-info">
+                                <div class="provider-name">Dr. Sarah Wilson</div>
+                                <div class="provider-specialty">Endocrinologist</div>
+                                <div class="provider-availability">📅 Next available: Dec 18</div>
+                                <div class="provider-rating">★★★★☆ 4.7</div>
+                            </div>
+                        </div>
+
+                        <div class="provider-card" onclick="selectProvider(2)">
+                            <div class="provider-avatar">EC</div>
+                            <div class="provider-info">
+                                <div class="provider-name">Emily Chen</div>
+                                <div class="provider-specialty">Registered Dietitian</div>
+                                <div class="provider-availability">📅 Next available: Dec 19</div>
+                                <div class="provider-rating">★★★★★ 4.9</div>
+                            </div>
+                        </div>
+
+                        <div class="provider-card" onclick="selectProvider(3)">
+                            <div class="provider-avatar">AH</div>
+                            <div class="provider-info">
+                                <div class="provider-name">Dr. Ahmed Hassan</div>
+                                <div class="provider-specialty">Internal Medicine</div>
+                                <div class="provider-availability">📅 Next available: Dec 22</div>
+                                <div class="provider-rating">★★★★☆ 4.5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Appointment Modal -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Schedule New Appointment</h2>
+            </div>
+            <div class="modal-body">
+                <div class="conflict-alert hidden" id="conflictAlert">
+                    ⚠️ Conflict detected! You have another appointment at <span id="conflictTime"></span>.
+                </div>
+                
+                <form id="appointmentForm">
+                    <div class="form-group">
+                        <label class="form-label">Select Healthcare Provider *</label>
+                        <select class="form-select" id="providerSelect" required onchange="updateProviderInfo()">
+                            <option value="">Choose a provider</option>
+                            <option value="1">Dr. Sarah Wilson - Endocrinologist</option>
+                            <option value="2">Emily Chen - Registered Dietitian</option>
+                            <option value="3">Dr. Ahmed Hassan - Internal Medicine</option>
+                            <option value="4">Dr. Fatima Al-Mahmood - Diabetes Specialist</option>
+                            <option value="5">Dr. Khalid Abdullah - Ophthalmologist</option>
+                        </select>
+                        <div id="providerInfo" style="margin-top: 10px; padding: 10px; background: #f8f9ff; border-radius: 8px; display: none;">
+                            <div style="font-weight: 600; color: #1565A6;" id="providerName"></div>
+                            <div style="font-size: 13px; color: #666;" id="providerDetails"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Appointment Type *</label>
+                        <select class="form-select" id="appointmentType" required>
+                            <option value="">Select type</option>
+                            <option value="routine">Routine Check-up</option>
+                            <option value="followup">Follow-up Visit</option>
+                            <option value="consultation">New Consultation</option>
+                            <option value="emergency">Urgent Care</option>
+                            <option value="lab_test">Lab Test/Review</option>
+                            <option value="diet_plan">Diet Plan Review</option>
+                            <option value="medication">Medication Review</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Preferred Date *</label>
+                        <input type="date" class="form-input" id="appointmentDate" required min="" onchange="checkAvailability()">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Preferred Time *</label>
+                        <select class="form-select" id="appointmentTime" required onchange="checkConflict()">
+                            <option value="">Select time slot</option>
+                            <!-- Time slots will be populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Appointment Location</label>
+                        <select class="form-select" id="appointmentLocation">
+                            <option value="clinic">In-person at Clinic</option>
+                            <option value="virtual">Virtual Consultation</option>
+                            <option value="hospital">Hospital Visit</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Reason for Visit *</label>
+                        <textarea class="form-textarea" id="visitReason" placeholder="Please describe the reason for your appointment..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Special Requirements</label>
+                        <textarea class="form-textarea" id="specialRequirements" placeholder="Any special accommodations, accessibility needs, or additional information..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitAppointment()" id="submitBtn">
+                    Schedule Appointment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global Variables
+        let currentDate = new Date();
+        let selectedDate = null;
+        let selectedProvider = 1;
+        let selectedTimeSlot = null;
+        const bookedSlots = ['2024-12-15 10:00', '2024-12-20 14:30', '2024-12-28 11:00'];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCalendar();
+            updateTimeSlots();
+            updateSelectedDateDisplay();
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('appointmentDate').min = today;
+        });
+
+        // Calendar Functions
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            document.getElementById('currentMonth').textContent = 
+                new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+            const calendarGrid = document.getElementById('calendarGrid');
+            const existingDays = calendarGrid.querySelectorAll('.calendar-day');
+            existingDays.forEach(day => day.remove());
+
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+
+            // Previous month days
+            for (let i = firstDay - 1; i >= 0; i--) {
+                createCalendarDay(daysInPrevMonth - i, true);
+            }
+
+            // Current month days
+            for (let i = 1; i <= daysInMonth; i++) {
+                createCalendarDay(i, false, isCurrentMonth && i === today.getDate());
+            }
+
+            // Next month days
+            const totalCells = calendarGrid.children.length - 7;
+            const remainingCells = 42 - totalCells;
+            for (let i = 1; i <= remainingCells; i++) {
+                createCalendarDay(i, true);
+            }
+        }
+
+        function createCalendarDay(day, isOtherMonth, isToday = false) {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            dayElement.textContent = day;
+
+            const fullDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+            const dateString = fullDate.toISOString().split('T')[0];
+
+            if (isOtherMonth) {
+                dayElement.classList.add('other-month');
+            }
+
+            if (isToday) {
+                dayElement.classList.add('today');
+            }
+
+            // Check if this date has appointments
+            const hasAppointment = bookedSlots.some(slot => slot.startsWith(dateString));
+            if (hasAppointment) {
+                dayElement.classList.add('has-appointment');
+            }
+
+            // Check if date is in the past
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (fullDate < today) {
+                dayElement.classList.add('unavailable');
+                dayElement.title = 'Past date - not available';
+            }
+
+            // Handle click
+            dayElement.addEventListener('click', function() {
+                if (this.classList.contains('unavailable')) return;
+                
+                document.querySelectorAll('.calendar-day.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                
+                this.classList.add('selected');
+                selectedDate = dateString;
+                updateSelectedDateDisplay();
+                updateTimeSlots();
+            });
+
+            calendarGrid.appendChild(dayElement);
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function goToToday() {
+            currentDate = new Date();
+            selectedDate = currentDate.toISOString().split('T')[0];
+            renderCalendar();
+            updateSelectedDateDisplay();
+            updateTimeSlots();
+        }
+
+        // Time Slots Functions
+        function updateTimeSlots() {
+            const timeSlotsContainer = document.getElementById('timeSlots');
+            timeSlotsContainer.innerHTML = '';
+            
+            if (!selectedDate) {
+                document.getElementById('timeSlotDate').textContent = 'Select a date first';
+                return;
+            }
+
+            const date = new Date(selectedDate);
+            const dateStr = date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+            document.getElementById('timeSlotDate').textContent = dateStr;
+
+            const timeSlots = [
+                { time: '08:00', isPeak: true, isBooked: false },
+                { time: '09:00', isPeak: true, isBooked: false },
+                { time: '10:00', isPeak: true, isBooked: selectedDate === '2024-12-15' },
+                { time: '11:00', isPeak: false, isBooked: false },
+                { time: '12:00', isPeak: false, isBooked: false },
+                { time: '13:00', isPeak: false, isBooked: false },
+                { time: '14:00', isPeak: false, isBooked: false },
+                { time: '14:30', isPeak: false, isBooked: selectedDate === '2024-12-20' },
+                { time: '15:00', isPeak: false, isBooked: false },
+                { time: '16:00', isPeak: true, isBooked: false },
+                { time: '17:00', isPeak: true, isBooked: false },
+                { time: '18:00', isPeak: false, isBooked: false }
+            ];
+
+            timeSlots.forEach(slot => {
+                const timeSlotElement = document.createElement('div');
+                timeSlotElement.className = 'time-slot';
+                timeSlotElement.textContent = slot.time;
+                
+                if (slot.isPeak) {
+                    timeSlotElement.classList.add('peak');
+                }
+                
+                if (slot.isBooked) {
+                    timeSlotElement.classList.add('booked');
+                    timeSlotElement.title = 'Already booked';
+                }
+
+                if (!slot.isBooked) {
+                    timeSlotElement.addEventListener('click', function() {
+                        document.querySelectorAll('.time-slot.selected').forEach(el => {
+                            el.classList.remove('selected');
+                        });
+                        this.classList.add('selected');
+                        selectedTimeSlot = slot.time;
+                    });
+                }
+
+                timeSlotsContainer.appendChild(timeSlotElement);
+            });
+        }
+
+        function updateSelectedDateDisplay() {
+            const displayElement = document.getElementById('selectedDateDisplay');
+            if (selectedDate) {
+                const date = new Date(selectedDate);
+                const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                displayElement.textContent = `Selected: ${dateStr}`;
+            } else {
+                displayElement.textContent = 'No date selected';
+            }
+        }
+
+        // Provider Functions
+        function selectProvider(providerId) {
+            selectedProvider = providerId;
+            document.querySelectorAll('.provider-card.selected').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function manageCareTeam() {
+            alert('Manage Care Team functionality - Add/Remove healthcare providers (FR10)');
+        }
+
+        // Appointment Functions
+        function openScheduleModal() {
+            document.getElementById('scheduleModal').classList.add('active');
+            populateTimeOptions();
+        }
+
+        function closeModal() {
+            document.getElementById('scheduleModal').classList.remove('active');
+            document.getElementById('conflictAlert').classList.add('hidden');
+            document.getElementById('appointmentForm').reset();
+        }
+
+        function populateTimeOptions() {
+            const timeSelect = document.getElementById('appointmentTime');
+            timeSelect.innerHTML = '<option value="">Select time slot</option>';
+            
+            const timeSlots = [
+                '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
+                '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
+                '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
+                '17:00', '17:30', '18:00'
+            ];
+            
+            timeSlots.forEach(time => {
+                const option = document.createElement('option');
+                option.value = time;
+                option.textContent = time;
+                timeSelect.appendChild(option);
+            });
+        }
+
+        function updateProviderInfo() {
+            const select = document.getElementById('providerSelect');
+            const infoDiv = document.getElementById('providerInfo');
+            const nameDiv = document.getElementById('providerName');
+            const detailsDiv = document.getElementById('providerDetails');
+            
+            if (select.value) {
+                const providers = {
+                    '1': { name: 'Dr. Sarah Wilson', details: 'Endocrinologist • Bahrain Diabetes Center • Next available: Dec 18' },
+                    '2': { name: 'Emily Chen', details: 'Registered Dietitian • Wellness Nutrition Center • Next available: Dec 19' },
+                    '3': { name: 'Dr. Ahmed Hassan', details: 'Internal Medicine • Salmaniya Medical Complex • Next available: Dec 22' },
+                    '4': { name: 'Dr. Fatima Al-Mahmood', details: 'Diabetes Specialist • American Mission Hospital • Next available: Dec 23' },
+                    '5': { name: 'Dr. Khalid Abdullah', details: 'Ophthalmologist • Eye Specialist Center • Next available: Dec 24' }
+                };
+                
+                const provider = providers[select.value];
+                nameDiv.textContent = provider.name;
+                detailsDiv.textContent = provider.details;
+                infoDiv.style.display = 'block';
+            } else {
+                infoDiv.style.display = 'none';
+            }
+        }
+
+        function checkAvailability() {
+            const dateInput = document.getElementById('appointmentDate');
+            const selectedDate = new Date(dateInput.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (selectedDate < today) {
+                alert('Cannot schedule appointments in the past.');
+                dateInput.value = '';
+            }
+        }
+
+        function checkConflict() {
+            const timeSelect = document.getElementById('appointmentTime');
+            const selectedTime = timeSelect.value;
+            const conflictAlert = document.getElementById('conflictAlert');
+            const conflictTimeSpan = document.getElementById('conflictTime');
+            
+            // Simulate conflict detection
+            const conflicts = {
+                '10:00': 'You have an appointment with Dr. Sarah Wilson at 10:00 AM',
+                '14:30': 'You have a diet plan review at 2:30 PM'
+            };
+            
+            if (conflicts[selectedTime]) {
+                conflictTimeSpan.textContent = conflicts[selectedTime];
+                conflictAlert.classList.remove('hidden');
+            } else {
+                conflictAlert.classList.add('hidden');
+            }
+        }
+
+        function submitAppointment() {
+            const form = document.getElementById('appointmentForm');
+            if (!form.checkValidity()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            const provider = document.getElementById('providerSelect').value;
+            const type = document.getElementById('appointmentType').value;
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            const reason = document.getElementById('visitReason').value;
+            
+            // Simulate API call
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.textContent = 'Scheduling...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert(`✅ Appointment scheduled successfully!\n\nDate: ${date}\nTime: ${time}\nProvider: ${document.getElementById('providerSelect').selectedOptions[0].text}\n\nReminders will be sent 24 hours and 1 hour before the appointment.`);
+                
+                closeModal();
+                submitBtn.textContent = 'Schedule Appointment';
+                submitBtn.disabled = false;
+                
+                // Refresh the appointments list (simulated)
+                location.reload();
+            }, 1500);
+        }
+
+        function editAppointment(appointmentId) {
+            alert(`Editing appointment #${appointmentId} - Feature coming soon!`);
+        }
+
+        function cancelAppointment(appointmentId) {
+            if (confirm('Are you sure you want to cancel this appointment?')) {
+                alert(`Appointment #${appointmentId} cancelled successfully.\nNotification sent to healthcare provider.`);
+                // In a real app, this would remove the appointment from the list
+            }
+        }
+
+        function joinVirtual(appointmentId) {
+            alert(`Joining virtual consultation for appointment #${appointmentId}\nVideo link: https://meet.geniesugar.com/${appointmentId}`);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('scheduleModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

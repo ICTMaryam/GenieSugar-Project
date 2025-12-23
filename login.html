@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenieSugar - Smart Diabetes Management</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Flag Icons for Language Switcher -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            /* New Color Palette */
+            --sunglo: #e26a61;
+            --picton-blue: #34acdf;
+            --atoll: #0e4e81;
+            --black-squeeze: #f6fcfc;
+            --pigeon-post: #b0cbdd;
+            --bazaar: #9f727e;
+            --steel-blue: #4690ba;
+            
+            /* Color Mapping */
+            --primary: var(--atoll);
+            --primary-light: var(--steel-blue);
+            --primary-lighter: var(--picton-blue);
+            --secondary: var(--pigeon-post);
+            --accent: var(--sunglo);
+            --accent-light: var(--bazaar);
+            --dark: var(--atoll);
+            --dark-light: var(--steel-blue);
+            --light: var(--black-squeeze);
+            --light-blue: var(--pigeon-post);
+            --gray: var(--bazaar);
+            --white: #ffffff;
+            --gradient-primary: linear-gradient(135deg, var(--atoll) 0%, var(--steel-blue) 50%, var(--picton-blue) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--pigeon-post) 0%, var(--picton-blue) 100%);
+            --gradient-accent: linear-gradient(135deg, var(--sunglo) 0%, var(--bazaar) 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans Arabic', sans-serif;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 0;
+            background-color: var(--white);
+        }
+        
+        body.rtl {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+        }
+        
+        body.rtl .navbar-nav {
+            margin-right: auto !important;
+            margin-left: 0 !important;
+        }
+        
+        body.rtl .ms-auto {
+            margin-left: 0 !important;
+            margin-right: auto !important;
+        }
+        
+        body.rtl .me-2 {
+            margin-right: 0 !important;
+            margin-left: 0.5rem !important;
+        }
+        
+        body.rtl .ms-2 {
+            margin-left: 0 !important;
+            margin-right: 0.5rem !important;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', 'Noto Sans Arabic', sans-serif;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        /* Header & Navigation */
+        .header-top {
+            background: var(--primary);
+            color: white;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        
+        .header-top a {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+        
+        .header-top i {
+            margin-right: 8px;
+        }
+        
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .lang-btn:hover, .lang-btn.active {
+            background: rgba(255,255,255,0.2);
+            border-color: white;
+        }
+        
+        .navbar {
+            background: var(--white) !important;
+            padding: 15px 0;
+            box-shadow: 0 2px 15px rgba(30, 64, 175, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--light-blue);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+        }
+        
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .navbar-brand-text {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 24px;
+        }
+        
+        .tagline {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 400;
+            margin-top: -5px;
+        }
+        
+        .nav-link {
+            color: #333 !important;
+            font-weight: 500;
+            margin: 0 8px;
+            padding: 8px 15px !important;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary) !important;
+            background: var(--light-blue);
+            border-radius: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(30, 64, 175, 0.4);
+            filter: brightness(1.1);
+            color: white;
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--light-blue) 0%, var(--secondary) 50%, var(--light) 100%);
+            color: var(--dark);
+            padding: 120px 0 80px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="%231e40af" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+        
+        .glucose-meter {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            position: relative;
+            background: var(--white);
+            border-radius: 50%;
+            box-shadow: 0 20px 50px rgba(30, 64, 175, 0.2);
+            border: 10px solid var(--light-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .glucose-reading {
+            text-align: center;
+        }
+        
+        .glucose-value {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+        
+        .glucose-unit {
+            font-size: 1.5rem;
+            color: var(--gray);
+            margin-left: 5px;
+        }
+        
+        .glucose-status {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: var(--white);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            text-align: center;
+            height: 100%;
+            border: 1px solid #eee;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 30px rgba(30, 64, 175, 0.4);
+        }
+        
+        .feature-icon i {
+            font-size: 35px;
+            color: white;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 100px 0;
+            background: var(--light-blue);
+        }
+        
+        .step-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+            height: 100%;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto 25px;
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 0;
+            background: var(--white);
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            border: 1px solid #eee;
+        }
+        
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+        
+        /* Partners */
+        .partners {
+            padding: 80px 0;
+            background: var(--light);
+        }
+        
+        .partner-logo {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .partner-logo img {
+            max-height: 100%;
+            max-width: 100%;
+            filter: grayscale(100%);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        .partner-logo:hover img {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
+        
+        .compliance-badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .badge {
+            background: var(--white);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        /* CTA */
+        .cta-section {
+            padding: 100px 0;
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .newsletter-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .form-control {
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 80px 0 30px;
+        }
+        
+        .footer h5 {
+            color: var(--secondary);
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        .footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: var(--secondary);
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(135, 206, 235, 0.2);
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            background: rgba(30, 58, 138, 0.5);
+            padding: 20px 0;
+            margin-top: 50px;
+            text-align: center;
+            color: #94a3b8;
+            border-top: 1px solid rgba(135, 206, 235, 0.2);
+        }
+        
+        .student-badge {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero {
+                padding: 100px 0 60px;
+                text-align: center;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .glucose-meter {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .glucose-value {
+                font-size: 3rem;
+            }
+        }
+        
+        /* Animation */
+        .animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Top Bar -->
+    <div class="header-top">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-phone"></i>
+                        <span>+973 1724 6800</span>
+                        <a href="mailto:support@geniesugar.com" class="ms-3">
+                            <i class="fas fa-envelope"></i>
+                            support@geniesugar.com
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="language-switcher justify-content-md-end">
+                        <button class="lang-btn active" onclick="switchLanguage('en')">
+                            <span class="flag-icon flag-icon-gb"></span> English
+                        </button>
+                        <button class="lang-btn" onclick="switchLanguage('ar')">
+                            <span class="flag-icon flag-icon-sa"></span> العربية
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="logo-container" href="#">
+                <div class="logo-img">
+                    GS
+                </div>
+                <div>
+                    <div class="navbar-brand-text">GenieSugar</div>
+                    <div class="tagline" data-en="Smart Diabetes Management" data-ar="إدارة ذكية لمرض السكري"></div>
+                </div>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home" data-en="Home" data-ar="الرئيسية">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features" data-en="Features" data-ar="المميزات">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works" data-en="How It Works" data-ar="كيف يعمل">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#testimonials" data-en="Testimonials" data-ar="آراء العملاء">Testimonials</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact" data-en="Contact" data-ar="اتصل بنا">Contact</a>
+                    </li>
+                </ul>
+                <div class="d-flex ms-lg-3 mt-3 mt-lg-0">
+                    <a href="login.html" class="btn btn-outline-primary me-2" data-en="Login" data-ar="تسجيل الدخول">Login</a>
+                    <a href="register.html" class="btn btn-primary" data-en="Get Started" data-ar="ابدأ الآن">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="animate" data-en="Take Control of Your Diabetes" data-ar="تحكم في مرض السكري الخاص بك">Take Control of Your Diabetes</h1>
+                    <p class="animate" data-en="Web-Based Blood Sugar Monitoring & Decision-Support System" data-ar="نظام مراقبة السكر في الدم واتخاذ القرارات المدعومة بالويب">
+                        Web-Based Blood Sugar Monitoring & Decision-Support System
+                    </p>
+                    
+                    <div class="row mt-4 animate">
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle text-primary me-3 fa-lg"></i>
+                                <span data-en="Real-time glucose tracking" data-ar="تتبع مستوى الجلوكوز في الوقت الحقيقي">Real-time glucose tracking</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle text-primary me-3 fa-lg"></i>
+                                <span data-en="Smart alerts & reminders" data-ar="تنبيهات وتذكيرات ذكية">Smart alerts & reminders</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle text-primary me-3 fa-lg"></i>
+                                <span data-en="Doctor collaboration" data-ar="تعاون مع الأطباء">Doctor collaboration</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle text-primary me-3 fa-lg"></i>
+                                <span data-en="Nutrition tracking" data-ar="تتبع التغذية">Nutrition tracking</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 animate">
+                        <a href="register.html" class="btn btn-primary btn-lg me-3" data-en="Start Free Trial" data-ar="ابدأ النسخة التجريبية المجانية">Start Free Trial</a>
+                        <a href="#demo" class="btn btn-outline-primary btn-lg" data-en="Watch Demo" data-ar="شاهد العرض التوضيحي">Watch Demo</a>
+                        <a href="login.html" class="btn btn-link text-dark ms-2" data-en="Login" data-ar="تسجيل الدخول">Login</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="glucose-meter animate">
+                        <div class="glucose-reading">
+                            <div class="glucose-value">128<span class="glucose-unit">mg/dL</span></div>
+                            <div class="glucose-status" data-en="Normal Range" data-ar="النطاق الطبيعي">Normal Range</div>
+                            <div class="mt-3">
+                                <small data-en="Last updated: Just now" data-ar="آخر تحديث: الآن">Last updated: Just now</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-en="Powerful Features" data-ar="مميزات قوية">Powerful Features</h2>
+                <p class="text-muted" data-en="Everything you need to manage diabetes effectively" data-ar="كل ما تحتاجه لإدارة مرض السكري بشكل فعال">Everything you need to manage diabetes effectively</p>
+            </div>
+            <div class="row">
+                <!-- Feature 1 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card animate">
+                        <div class="feature-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h4 data-en="Real-Time Monitoring" data-ar="المراقبة في الوقت الحقيقي">Real-Time Monitoring</h4>
+                        <p data-en="Live glucose tracking with CGM integration. Connect your FreeStyle Libre 4 or Dexcom sensor." data-ar="تتبع الجلوكوز الحي مع تكامل CGM. قم بتوصيل جهاز FreeStyle Libre 4 أو Dexcom الخاص بك.">
+                            Live glucose tracking with CGM integration. Connect your FreeStyle Libre 4 or Dexcom sensor.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card animate">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h4 data-en="Smart Alerts" data-ar="تنبيهات ذكية">Smart Alerts</h4>
+                        <p data-en="Automatic email/SMS for high/low glucose. Get notified when glucose goes out of range." data-ar="بريد إلكتروني / رسائل نصية تلقائية للجلوكوز المرتفع / المنخفض. احصل على إشعار عندما يخرج الجلوكوز عن النطاق.">
+                            Automatic email/SMS for high/low glucose. Get notified when glucose goes out of range.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card animate">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <h4 data-en="Doctor Collaboration" data-ar="تعاون مع الأطباء">Doctor Collaboration</h4>
+                        <p data-en="Share data with healthcare team. Your doctor can monitor your progress remotely." data-ar="شارك البيانات مع فريق الرعاية الصحية. يمكن لطبيبك مراقبة تقدمك عن بُعد.">
+                            Share data with healthcare team. Your doctor can monitor your progress remotely.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card animate">
+                        <div class="feature-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <h4 data-en="Nutrition Tracking" data-ar="تتبع التغذية">Nutrition Tracking</h4>
+                        <p data-en="Food logging with carb counting. Log meals and track nutritional impact." data-ar="تسجيل الطعام مع عد الكربوهيدرات. سجل الوجبات وتتبع التأثير الغذائي.">
+                            Food logging with carb counting. Log meals and track nutritional impact.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card animate">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4 data-en="Multi-Device Access" data-ar="الوصول متعدد الأجهزة">Multi-Device Access</h4>
+                        <p data-en="Web, tablet, mobile responsive. Access your data anywhere, anytime." data-ar="الويب ، الجهاز اللوحي ، الهاتف المحمول سريع الاستجابة. قم بالوصول إلى بياناتك في أي مكان وفي أي وقت.">
+                            Web, tablet, mobile responsive. Access your data anywhere, anytime.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="feature-card animate">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4 data-en="AI Insights" data-ar="رؤى الذكاء الاصطناعي">AI Insights</h4>
+                        <p data-en="Personalized recommendations based on your data patterns and trends analysis." data-ar="توصيات مخصصة بناءً على أنماط بياناتك وتحليل الاتجاهات.">
+                            Personalized recommendations based on your data patterns and trends analysis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-en="How It Works" data-ar="كيف يعمل">How It Works</h2>
+                <p class="text-muted" data-en="Get started in 4 simple steps" data-ar="ابدأ في 4 خطوات بسيطة">Get started in 4 simple steps</p>
+            </div>
+            <div class="row">
+                <!-- Step 1 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="step-card animate">
+                        <div class="step-number">1</div>
+                        <h4 data-en="Connect Your Sensor" data-ar="قم بتوصيل المستشعر">Connect Your Sensor</h4>
+                        <p data-en="Connect your FreeStyle Libre 4 or Dexcom sensor to start monitoring." data-ar="قم بتوصيل مستشعر FreeStyle Libre 4 أو Dexcom الخاص بك لبدء المراقبة.">
+                            Connect your FreeStyle Libre 4 or Dexcom sensor to start monitoring.
+                        </p>
+                        <div class="mt-4">
+                            <i class="fas fa-bluetooth fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="step-card animate">
+                        <div class="step-number">2</div>
+                        <h4 data-en="Data Sync" data-ar="مزامنة البيانات">Data Sync</h4>
+                        <p data-en="Data syncs automatically to your dashboard every 5 minutes." data-ar="تتم مزامنة البيانات تلقائيًا إلى لوحة التحكم الخاصة بك كل 5 دقائق.">
+                            Data syncs automatically to your dashboard every 5 minutes.
+                        </p>
+                        <div class="mt-4">
+                            <i class="fas fa-cloud-upload-alt fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="step-card animate">
+                        <div class="step-number">3</div>
+                        <h4 data-en="Get Alerts & Insights" data-ar="احصل على التنبيهات والرؤى">Get Alerts & Insights</h4>
+                        <p data-en="Receive smart alerts and AI-powered insights for better management." data-ar="تلقي تنبيهات ذكية ورؤى مدعومة بالذكاء الاصطناعي لإدارة أفضل.">
+                            Receive smart alerts and AI-powered insights for better management.
+                        </p>
+                        <div class="mt-4">
+                            <i class="fas fa-bell fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="step-card animate">
+                        <div class="step-number">4</div>
+                        <h4 data-en="Share with Providers" data-ar="شارك مع مقدمي الرعاية">Share with Providers</h4>
+                        <p data-en="Share your data securely with healthcare providers for collaborative care." data-ar="شارك بياناتك بأمان مع مقدمي الرعاية الصحية للرعاية التعاونية.">
+                            Share your data securely with healthcare providers for collaborative care.
+                        </p>
+                        <div class="mt-4">
+                            <i class="fas fa-share-alt fa-2x text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-en="Trusted by Thousands" data-ar="موثوق به من قبل الآلاف">Trusted by Thousands</h2>
+                <p class="text-muted" data-en="See what our users say" data-ar="شاهد ما يقوله مستخدمونا">See what our users say</p>
+            </div>
+            
+            <div class="row">
+                <!-- Patient Testimonial 1 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="testimonial-card animate">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="testimonial-avatar bg-primary text-white d-flex align-items-center justify-content-center">
+                                <i class="fas fa-user fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Sarah Ahmed</h5>
+                                <p class="text-muted mb-0" data-en="Type 2 Diabetes Patient" data-ar="مريضة سكري النوع الثاني">Type 2 Diabetes Patient</p>
+                            </div>
+                        </div>
+                        <p class="mb-4" data-en="GenieSugar helped me reduce my A1C by 2% in 3 months. The real-time alerts are life-saving!" data-ar="ساعدني GenieSugar في تقليل A1C بنسبة 2٪ في 3 أشهر. التنبيهات في الوقت الحقيقي تنقذ الحياة!">
+                            "GenieSugar helped me reduce my A1C by 2% in 3 months. The real-time alerts are life-saving!"
+                        </p>
+                        <div class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Patient Testimonial 2 -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="testimonial-card animate">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="testimonial-avatar bg-primary text-white d-flex align-items-center justify-content-center">
+                                <i class="fas fa-user fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Mohammed Ali</h5>
+                                <p class="text-muted mb-0" data-en="Type 1 Diabetes Patient" data-ar="مريض سكري النوع الأول">Type 1 Diabetes Patient</p>
+                            </div>
+                        </div>
+                        <p class="mb-4" data-en="The alerts saved me during a hypoglycemia episode. This platform is a game-changer for diabetes management." data-ar="أنقذتني التنبيهات خلال نوبة نقص السكر في الدم. هذه المنصة تغير قواعد اللعبة لإدارة مرض السكري.">
+                            "The alerts saved me during a hypoglycemia episode. This platform is a game-changer for diabetes management."
+                        </p>
+                        <div class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Doctor Testimonial -->
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="testimonial-card animate">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="testimonial-avatar bg-primary text-white d-flex align-items-center justify-content-center">
+                                <i class="fas fa-user-md fa-2x"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Dr. Fatima Hassan</h5>
+                                <p class="text-muted mb-0" data-en="Endocrinologist, Bahrain Diabetes Society" data-ar="أخصائي الغدد الصماء، جمعية السكري البحرينية">Endocrinologist, Bahrain Diabetes Society</p>
+                            </div>
+                        </div>
+                        <p class="mb-4" data-en="GenieSugar provides doctors with real patient data, not just memory. This improves treatment outcomes significantly." data-ar="يوفر GenieSugar للأطباء بيانات المرضى الحقيقية، وليس الذاكرة فقط. هذا يحسن نتائج العلاج بشكل كبير.">
+                            "GenieSugar provides doctors with real patient data, not just memory. This improves treatment outcomes significantly."
+                        </p>
+                        <div class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section class="partners">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-en="Our Partners" data-ar="شركاؤنا">Our Partners</h2>
+                <p class="text-muted" data-en="Collaborating with leading healthcare institutions" data-ar="نتعاون مع مؤسسات الرعاية الصحية الرائدة">Collaborating with leading healthcare institutions</p>
+            </div>
+            
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center">
+                    <div class="partner-logo">
+                        <div class="bg-primary text-white p-4 rounded-3" style="width: 200px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <h5 class="mb-0" data-en="Bahrain Diabetes Society" data-ar="جمعية السكري البحرينية">Bahrain Diabetes Society</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="partner-logo">
+                        <div class="bg-dark text-white p-4 rounded-3" style="width: 200px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <h5 class="mb-0" data-en="Bahrain Polytechnic" data-ar="الكلية البحرينية التقنية">Bahrain Polytechnic</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="partner-logo">
+                        <div class="bg-success text-white p-4 rounded-3" style="width: 200px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <h5 class="mb-0" data-en="Microsoft Azure" data-ar="مايكروسوفت أزور">Microsoft Azure</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="compliance-badges">
+                <div class="badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span data-en="HIPAA Compliant" data-ar="متوافق مع HIPAA">HIPAA Compliant</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-lock"></i>
+                    <span data-en="GDPR Compliant" data-ar="متوافق مع GDPR">GDPR Compliant</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-user-shield"></i>
+                    <span data-en="Bahrain PDPL Compliant" data-ar="متوافق مع PDPL البحرين">Bahrain PDPL Compliant</span>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <div class="student-badge">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span data-en="Student Project - Academic Use" data-ar="مشروع طلابي - للاستخدام الأكاديمي">Student Project - Academic Use</span>
+                </div>
+                <p class="mt-3" data-en="Developed by Maryam Mohamed as part of Bahrain Polytechnic ICT Project" data-ar="تم التطوير بواسطة مريم محمد كجزء من مشروع تكنولوجيا المعلومات والاتصالات بالكلية البحرينية التقنية">
+                    Developed by Maryam Mohamed as part of Bahrain Polytechnic ICT Project
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="demo" class="cta-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h2 class="mb-4" data-en="Ready to take control of your diabetes?" data-ar="هل أنت مستعد للتحكم في مرض السكري الخاص بك؟">Ready to take control of your diabetes?</h2>
+                    <p class="mb-5 fs-5" data-en="Join thousands managing their health with GenieSugar" data-ar="انضم إلى الآلاف الذين يديرون صحتهم مع GenieSugar">Join thousands managing their health with GenieSugar</p>
+                    
+                    <div class="newsletter-form mb-5">
+                        <div class="input-group mb-3">
+                            <input type="email" class="form-control" placeholder="Enter your email" data-en="Enter your email" data-ar="أدخل بريدك الإلكتروني">
+                            <button class="btn btn-light" type="button" data-en="Subscribe" data-ar="اشترك">Subscribe</button>
+                        </div>
+                        <small class="opacity-75" data-en="Subscribe to our newsletter for updates" data-ar="اشترك في نشرتنا الإخبارية للحصول على التحديثات">Subscribe to our newsletter for updates</small>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="register.html" class="btn btn-light btn-lg px-5" data-en="Start Free Trial" data-ar="ابدأ النسخة التجريبية المجانية">Start Free Trial</a>
+                        <a href="#contact" class="btn btn-outline-light btn-lg px-5" data-en="Schedule a Demo" data-ar="جدولة عرض توضيحي">Schedule a Demo</a>
+                        <a href="#contact" class="btn btn-link text-white" data-en="Contact Sales" data-ar="اتصل بالمبيعات">Contact Sales</a>
+                    </div>
+                    
+                    <p class="mt-4 opacity-75" data-en="No credit card required • 14-day free trial" data-ar="لا حاجة لبطاقة ائتمان • نسخة تجريبية مجانية لمدة 14 يومًا">No credit card required • 14-day free trial</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="logo-img" style="width: 40px; height: 40px; border-radius: 10px;">
+                            GS
+                        </div>
+                        <div class="ms-2">
+                            <div class="navbar-brand-text" style="font-size: 20px;">GenieSugar</div>
+                            <div class="tagline text-white">Smart Diabetes Management</div>
+                        </div>
+                    </div>
+                    <p class="mb-4" data-en="Web-Based Blood Sugar Monitoring & Decision-Support System in partnership with leading healthcare institutions." data-ar="نظام مراقبة سكر الدم عبر الإنترنت ودعم القرار بالشراكة مع مؤسسات الرعاية الصحية الرائدة.">
+                        Web-Based Blood Sugar Monitoring & Decision-Support System in partnership with leading healthcare institutions.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-5 mb-lg-0">
+                    <h5 class="mb-4" data-en="Quick Links" data-ar="روابط سريعة">Quick Links</h5>
+                    <a href="login.html" data-en="Login / Register" data-ar="تسجيل الدخول / التسجيل">Login / Register</a>
+                    <a href="#about" data-en="About Us" data-ar="معلومات عنا">About Us</a>
+                    <a href="#features" data-en="Features" data-ar="المميزات">Features</a>
+                    <a href="#pricing" data-en="Pricing" data-ar="التسعير">Pricing</a>
+                    <a href="#contact" data-en="Contact" data-ar="اتصل بنا">Contact</a>
+                </div>
+                
+                <div class="col-lg-3 col-md-4 mb-5 mb-lg-0">
+                    <h5 class="mb-4" data-en="Legal" data-ar="قانوني">Legal</h5>
+                    <a href="#privacy" data-en="Privacy Policy" data-ar="سياسة الخصوصية">Privacy Policy</a>
+                    <a href="#terms" data-en="Terms of Service" data-ar="شروط الخدمة">Terms of Service</a>
+                    <a href="#cookies" data-en="Cookie Policy" data-ar="سياسة الكوكيز">Cookie Policy</a>
+                    <a href="#hipaa" data-en="HIPAA Compliance" data-ar="الامتثال لـ HIPAA">HIPAA Compliance</a>
+                </div>
+                
+                <div class="col-lg-3 col-md-4">
+                    <h5 class="mb-4" data-en="Contact Information" data-ar="معلومات الاتصال">Contact Information</h5>
+                    <p class="mb-2">
+                        <i class="fas fa-envelope me-2"></i>
+                        <a href="mailto:support@geniesugar.com" class="text-white">support@geniesugar.com</a>
+                    </p>
+                    <p class="mb-2">
+                        <i class="fas fa-phone me-2"></i>
+                        <a href="tel:+97317246800" class="text-white">+973 1724 6800</a>
+                    </p>
+                    <p class="mb-0">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        <span data-en="Bahrain Polytechnic / Bahrain Diabetes Society" data-ar="الكلية البحرينية التقنية / جمعية السكري البحرينية">Bahrain Polytechnic / Bahrain Diabetes Society</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <div class="container">
+                    <p class="mb-2" data-en="© 2025 GenieSugar. All rights reserved." data-ar="© 2025 GenieSugar. جميع الحقوق محفوظة.">
+                        © 2025 GenieSugar. All rights reserved.
+                    </p>
+                    <p class="mb-0" data-en="Microsoft Azure Powered" data-ar="مدعوم من Microsoft Azure">
+                        Microsoft Azure Powered
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Language switching functionality
+        function switchLanguage(lang) {
+            // Update body direction
+            if (lang === 'ar') {
+                document.body.classList.add('rtl');
+                document.body.dir = 'rtl';
+                document.body.lang = 'ar';
+                document.querySelector('html').lang = 'ar';
+            } else {
+                document.body.classList.remove('rtl');
+                document.body.dir = 'ltr';
+                document.body.lang = 'en';
+                document.querySelector('html').lang = 'en';
+            }
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update all translatable elements
+            document.querySelectorAll('[data-en]').forEach(element => {
+                if (lang === 'ar') {
+                    const arabicText = element.getAttribute('data-ar');
+                    if (arabicText && element.textContent !== arabicText) {
+                        element.textContent = arabicText;
+                    }
+                } else {
+                    const englishText = element.getAttribute('data-en');
+                    if (englishText && element.textContent !== englishText) {
+                        element.textContent = englishText;
+                    }
+                }
+            });
+            
+            // Save language preference
+            localStorage.setItem('preferredLanguage', lang);
+        }
+        
+        // Check for saved language preference
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+            if (savedLang === 'ar') {
+                // Trigger Arabic language switch
+                const arBtn = document.querySelector('.lang-btn[onclick*="ar"]');
+                if (arBtn) {
+                    arBtn.click();
+                }
+            }
+            
+            // Animation on scroll
+            const animateElements = document.querySelectorAll('.animate');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            animateElements.forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Navbar active state
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= (sectionTop - 100)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+            
+            // Simulate live glucose updates
+            function updateGlucoseReading() {
+                const glucoseValue = document.querySelector('.glucose-value');
+                const glucoseStatus = document.querySelector('.glucose-status');
+                
+                if (glucoseValue && glucoseStatus) {
+                    // Generate random glucose value between 70-180
+                    const randomValue = Math.floor(Math.random() * 110) + 70;
+                    glucoseValue.innerHTML = `${randomValue}<span class="glucose-unit">mg/dL</span>`;
+                    
+                    // Update status
+                    if (randomValue < 80) {
+                        glucoseStatus.textContent = document.body.classList.contains('rtl') ? 'منخفض' : 'Low';
+                        glucoseStatus.style.color = 'orange';
+                    } else if (randomValue > 140) {
+                        glucoseStatus.textContent = document.body.classList.contains('rtl') ? 'مرتفع' : 'High';
+                        glucoseStatus.style.color = 'red';
+                    } else {
+                        glucoseStatus.textContent = document.body.classList.contains('rtl') ? 'النطاق الطبيعي' : 'Normal Range';
+                        glucoseStatus.style.color = 'green';
+                    }
+                }
+            }
+            
+            // Update glucose every 10 seconds
+            setInterval(updateGlucoseReading, 10000);
+        });
+    </script>
+</body>
+</html>

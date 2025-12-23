@@ -1,0 +1,335 @@
+/* Enhanced CSS for GenieSugar with Medical Partners Section */
+
+/* Medical Partners Section */
+.medical-partners {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #f6fcfc 0%, #b0cbdd 100%); /* black-squeeze to pigeon-post */
+}
+
+.partner-showcase {
+    background: white;
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    margin-top: 40px;
+}
+
+.partner-info h3 {
+    font-size: 32px;
+    color: #0e4e81; /* atoll */
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.partner-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+.partner-details {
+    color: #444;
+    line-height: 1.8;
+}
+
+.partner-details > p {
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.partner-highlights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin: 40px 0;
+}
+
+.highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border-left: 4px solid #0e4e81; /* atoll */
+}
+
+.highlight-icon {
+    width: 50px;
+    height: 50px;
+    background: #f6fcfc; /* black-squeeze */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.highlight-icon svg {
+    stroke: #0e4e81; /* atoll */
+}
+
+.highlight-item h4 {
+    font-size: 24px;
+    color: #0e4e81; /* atoll */
+    margin: 0;
+    font-weight: 700;
+}
+
+.highlight-item p {
+    margin: 5px 0 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.diabetes-focus {
+    background: linear-gradient(135deg, #f6fcfc 0%, #b0cbdd 100%); /* black-squeeze to pigeon-post */
+    padding: 30px;
+    border-radius: 15px;
+    margin: 30px 0;
+}
+
+.diabetes-focus h4 {
+    color: #0e4e81; /* atoll */
+    font-size: 22px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.diabetes-focus p {
+    color: #444;
+    line-height: 1.8;
+    margin: 0;
+}
+
+.contact-info {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: #555;
+}
+
+.contact-item svg {
+    stroke: #0e4e81; /* atoll */
+    flex-shrink: 0;
+}
+
+/* Diabetes Specialists Section */
+.specialists-section {
+    padding: 80px 0;
+    background: white;
+}
+
+.specialists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.specialist-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e0e0e0;
+}
+
+.specialist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+}
+
+.specialist-image {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.placeholder-avatar {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #f6fcfc 0%, #b0cbdd 100%); /* black-squeeze to pigeon-post */
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.specialist-info h3 {
+    font-size: 22px;
+    color: #0e4e81; /* atoll */
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.specialist-title {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.specialist-credentials {
+    font-size: 14px;
+    color: #0e4e81; /* atoll */
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.specialist-details {
+    color: #555;
+    line-height: 1.7;
+    margin: 20px 0;
+    font-size: 15px;
+}
+
+.specialist-expertise {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.expertise-tag {
+    background: #f6fcfc; /* black-squeeze */
+    color: #0e4e81; /* atoll */
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.specialist-contact {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    font-size: 14px;
+}
+
+.specialist-contact p {
+    margin: 8px 0;
+    color: #555;
+}
+
+.specialist-contact strong {
+    color: #0e4e81; /* atoll */
+}
+
+/* Additional Resources */
+.additional-resources {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.resource-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 30px;
+    border-radius: 15px;
+    border-left: 4px solid #0e4e81; /* atoll */
+}
+
+.resource-card h4 {
+    color: #0e4e81; /* atoll */
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.resource-card p {
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .partner-showcase {
+        padding: 30px 20px;
+    }
+    
+    .partner-highlights {
+        grid-template-columns: 1fr;
+    }
+    
+    .specialists-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .additional-resources {
+        grid-template-columns: 1fr;
+    }
+    
+    .highlight-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .contact-item {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* Ensure smooth scrolling for navigation */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Update existing sections to complement new design */
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-header h2 {
+    font-size: 36px;
+    color: #0e4e81; /* atoll */
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.section-header p {
+    font-size: 18px;
+    color: #666;
+    font-weight: 400;
+}
+
+/* Enhanced CTA Section */
+.cta {
+    background: linear-gradient(135deg, #0e4e81 0%, #4690ba 100%); /* atoll to steel-blue */
+    padding: 80px 0;
+    color: white;
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.cta-content p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.cta-note {
+    margin-top: 20px;
+    font-size: 14px;
+    opacity: 0.8;
+}

@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GenieSugar — Doctor Dashboard</title>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --bg: #0b1020;
+      --panel: #111735;
+      --panel-2: #0f1530;
+      --text: #e6e9f4;
+      --muted: #a7b0d6;
+      --brand: #1565A6;
+      --brand-2:#1b8bd1;
+      --good:#19c37d;
+      --warn:#f5a524;
+      --bad:#ff6b6b;
+      --border: rgba(255,255,255,0.08);
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(3,8,20,0.55);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 700px at 10% -20%, #1a2147 0%, transparent 60%),
+                  radial-gradient(1000px 700px at 110% 10%, #0a4c80 0%, transparent 55%),
+                  var(--bg);
+    }
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit}
+
+    /* Layout */
+    .app{
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      min-height:100vh;
+    }
+    .sidebar{
+      background: linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+      border-right:1px solid var(--border);
+      padding:18px 14px;
+      position:sticky;
+      top:0;
+      height:100vh;
+      overflow:auto;
+    }
+
+    .brand{
+      display:flex;align-items:center;gap:10px;
+      padding:8px 12px;
+      margin-bottom:14px;
+    }
+    .brand-logo{
+      width:40px;height:40px;border-radius:12px;
+      background: conic-gradient(from 210deg, var(--brand), #6ad3ff, #8f7bff, var(--brand));
+      display:grid;place-items:center;color:white;font-weight:800;
+      box-shadow:0 6px 16px rgba(0,0,0,0.35);
+    }
+    .brand h1{
+      font-size:18px;margin:0;font-weight:700;letter-spacing:.2px;
+    }
+    .subtitle{font-size:12px;color:var(--muted)}
+
+    .profile{
+      display:flex;gap:12px;align-items:center;
+      background: rgba(255,255,255,0.03);
+      border:1px solid var(--border);
+      padding:12px;border-radius:14px;margin:10px 8px 18px;
+    }
+    .avatar{
+      width:52px;height:52px;border-radius:14px;background:#0c3a63;
+      display:grid;place-items:center;font-weight:800;font-size:18px;
+    }
+    .profile .name{font-weight:700}
+    .profile .role{font-size:12px;color:var(--muted)}
+    .profile .status{
+      margin-top:6px;font-size:12px;color:#bff0d7;
+      background: rgba(25,195,125,0.12);display:inline-block;padding:3px 8px;border-radius:999px;
+      border:1px solid rgba(25,195,125,0.25);
+    }
+
+    .search{
+      display:flex;align-items:center;gap:8px;
+      background: rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      padding:8px 10px;border-radius:12px;margin:0 8px 14px;
+    }
+    .search input{
+      width:100%;border:none;background:transparent;color:var(--text);
+      outline:none;font-size:14px;
+    }
+
+    .menu{display:flex;flex-direction:column;gap:6px;padding:0 6px}
+    .menu-item{
+      display:flex;align-items:center;gap:10px;
+      padding:10px 12px;border-radius:12px;color:var(--muted);
+      cursor:pointer;transition:.15s ease;
+      border:1px solid transparent;
+      user-select:none;
+    }
+    .menu-item:hover{
+      background: rgba(255,255,255,0.06);
+      color:var(--text);
+      border-color:var(--border);
+    }
+    .menu-item.active{
+      background: linear-gradient(90deg, rgba(21,101,166,0.20), rgba(21,101,166,0.05));
+      color: #eaf5ff;
+      border-color: rgba(21,101,166,0.45);
+      box-shadow: inset 0 0 0 1px rgba(21,101,166,0.2);
+    }
+    .menu-item .dot{
+      width:8px;height:8px;border-radius:999px;background:var(--brand);
+      box-shadow:0 0 12px rgba(27,139,209,0.8);
+    }
+    .menu-label{font-weight:600;font-size:14px}
+    .menu-badge{
+      margin-left:auto;font-size:12px;
+      background:rgba(255,255,255,0.08);padding:2px 8px;border-radius:999px;color:#d7defa;border:1px solid var(--border)
+    }
+
+    .sidebar-footer{
+      margin-top:18px;padding:8px 10px;color:var(--muted);font-size:12px;text-align:center;
+    }
+
+    /* Main */
+    .main{
+      padding:18px 20px 26px;
+    }
+    .topbar{
+      display:flex;align-items:center;gap:12px;justify-content:space-between;
+      background: rgba(255,255,255,0.03);
+      border:1px solid var(--border);
+      padding:12px 14px;border-radius:14px;box-shadow:var(--shadow);
+      position:sticky;top:10px;z-index:5;
+      backdrop-filter: blur(8px);
+    }
+    .top-left{display:flex;align-items:center;gap:10px}
+    .hamburger{
+      display:none;
+      width:40px;height:40px;border-radius:10px;border:1px solid var(--border);
+      background:rgba(255,255,255,0.04);color:var(--text);cursor:pointer;
+    }
+    .page-title{font-weight:800;font-size:18px}
+    .crumb{font-size:12px;color:var(--muted)}
+
+    .top-actions{display:flex;align-items:center;gap:8px}
+    .pill{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.04);
+      color:var(--text);
+      border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer;transition:.15s ease;
+    }
+    .pill:hover{transform:translateY(-1px);background:rgba(255,255,255,0.08)}
+    .pill.brand{background:rgba(21,101,166,0.2);border-color:rgba(21,101,166,0.6)}
+    .pill.brand:hover{background:rgba(21,101,166,0.32)}
+    .notif{
+      position:relative;
+    }
+    .notif::after{
+      content:attr(data-count);
+      position:absolute;top:-6px;right:-6px;
+      font-size:11px;background:var(--bad);color:white;padding:2px 6px;border-radius:999px;border:2px solid var(--panel);
+    }
+
+    /* Sections */
+    .section{display:none;margin-top:16px;animation:fade .2s ease}
+    .section.active{display:block}
+    @keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+    .grid{
+      display:grid;gap:12px;
+      grid-template-columns: repeat(12, 1fr);
+      margin-top:12px;
+    }
+    .card{
+      background: rgba(255,255,255,0.03);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:14px;
+      box-shadow:var(--shadow);
+    }
+    .card h3{margin:0 0 8px;font-size:15px}
+    .muted{color:var(--muted);font-size:13px}
+
+    .stat{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .stat .value{font-size:26px;font-weight:800}
+    .stat .delta{font-size:12px}
+    .delta.up{color:var(--good)}
+    .delta.down{color:var(--bad)}
+
+    .span-3{grid-column: span 3;}
+    .span-4{grid-column: span 4;}
+    .span-5{grid-column: span 5;}
+    .span-6{grid-column: span 6;}
+    .span-7{grid-column: span 7;}
+    .span-8{grid-column: span 8;}
+    .span-9{grid-column: span 9;}
+    .span-12{grid-column: span 12;}
+
+    .toolbar{
+      display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px;
+    }
+    .toolbar .left{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .input, select{
+      background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text);
+      padding:8px 10px;border-radius:10px;font-size:13px;outline:none;min-width:150px;
+    }
+
+    table{
+      width:100%;border-collapse:separate;border-spacing:0 8px;font-size:14px;
+    }
+    th{color:var(--muted);text-align:left;font-weight:600;font-size:12px;padding:0 10px}
+    td{
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      padding:10px;border-left:none;border-right:none;
+    }
+    tr td:first-child{border-left:1px solid var(--border);border-radius:12px 0 0 12px}
+    tr td:last-child{border-right:1px solid var(--border);border-radius:0 12px 12px 0}
+    .tag{
+      padding:3px 8px;border-radius:999px;font-size:12px;font-weight:600;display:inline-block;
+      border:1px solid transparent;
+    }
+    .tag.good{background:rgba(25,195,125,0.12);color:#bff0d7;border-color:rgba(25,195,125,0.25)}
+    .tag.warn{background:rgba(245,165,36,0.12);color:#ffe2ab;border-color:rgba(245,165,36,0.25)}
+    .tag.bad{background:rgba(255,107,107,0.12);color:#ffcaca;border-color:rgba(255,107,107,0.25)}
+
+    .row-actions{display:flex;gap:6px}
+    .btn{
+      padding:7px 10px;border-radius:10px;border:1px solid var(--border);
+      background:rgba(255,255,255,0.06);color:var(--text);cursor:pointer;font-size:12px;font-weight:600;
+      transition:.15s ease;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.brand{background:rgba(21,101,166,0.26);border-color:rgba(21,101,166,0.6)}
+    .btn.ghost{background:transparent}
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(3,8,20,0.6);display:none;align-items:center;justify-content:center;z-index:50;
+      padding:16px;
+    }
+    .modal-backdrop.show{display:flex}
+    .modal{
+      width:min(720px, 100%);
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    .modal header{
+      display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;
+    }
+    .modal h2{margin:0;font-size:18px}
+    .modal .modal-body{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+    .modal .modal-body .full{grid-column:1/-1}
+    .modal label{font-size:12px;color:var(--muted)}
+    .modal input, .modal textarea, .modal select{
+      width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text);
+      padding:8px 10px;border-radius:10px;font-size:14px;outline:none;
+    }
+    .modal textarea{min-height:90px;resize:vertical}
+    .modal footer{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+
+    /* Responsive */
+    @media (max-width: 1024px){
+      .app{grid-template-columns: 230px 1fr;}
+      .span-3{grid-column: span 6;}
+      .span-4{grid-column: span 6;}
+      .span-5{grid-column: span 12;}
+      .span-6{grid-column: span 12;}
+      .span-7{grid-column: span 12;}
+      .span-8{grid-column: span 12;}
+      .span-9{grid-column: span 12;}
+    }
+    @media (max-width: 760px){
+      .app{grid-template-columns:1fr;}
+      .sidebar{position:fixed;left:0;top:0;bottom:0;width:280px;transform:translateX(-100%);transition:.2s ease;z-index:20;}
+      .sidebar.open{transform:translateX(0)}
+      .hamburger{display:inline-grid;place-items:center;}
+      .main{padding:14px;}
+      .topbar{top:0;border-radius:0;}
+      .modal .modal-body{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo">GS</div>
+      <div>
+        <h1>GenieSugar Doctor</h1>
+        <div class="subtitle">Clinical dashboard</div>
+      </div>
+    </div>
+
+    <div class="profile">
+      <div class="avatar" id="avatarInitials">DA</div>
+      <div>
+        <div class="name" id="doctorName">Dr. Sarah Ahmed</div>
+        <div class="role">Endocrinologist</div>
+        <div class="status">Online</div>
+      </div>
+    </div>
+
+    <div class="search">
+      <span>🔍</span>
+      <input id="globalSearch" placeholder="Search patients, appointments..." />
+    </div>
+
+    <nav class="menu">
+      <div class="menu-item active" onclick="showSection(event,'overview')">
+        <div class="dot"></div>
+        <div class="menu-label">Dashboard</div>
+      </div>
+      <div class="menu-item" onclick="showSection(event,'patients')">
+        <div class="dot"></div>
+        <div class="menu-label">My Patients</div>
+        <div class="menu-badge" id="patientsCountBadge">24</div>
+      </div>
+      <div class="menu-item" onclick="showSection(event,'appointments')">
+        <div class="dot"></div>
+        <div class="menu-label">Appointments</div>
+        <div class="menu-badge" id="appointmentsCountBadge">8</div>
+      </div>
+      <div class="menu-item" onclick="showSection(event,'analytics')">
+        <div class="dot"></div>
+        <div class="menu-label">Analytics</div>
+      </div>
+      <div class="menu-item" onclick="showSection(event,'reports')">
+        <div class="dot"></div>
+        <div class="menu-label">Reports</div>
+      </div>
+      <div class="menu-item" onclick="showSection(event,'settings')">
+        <div class="dot"></div>
+        <div class="menu-label">Settings</div>
+      </div>
+
+      <div style="height:8px"></div>
+      <div class="menu-item" onclick="logout()">
+        <div class="dot" style="background:#7b849f"></div>
+        <div class="menu-label">Logout</div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">GenieSugar © 2025</div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+    <header class="topbar">
+      <div class="top-left">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <div>
+          <div class="page-title" id="pageTitle">Dashboard Overview</div>
+          <div class="crumb" id="pageCrumb">Welcome back, doctor</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="pill notif" id="notifBtn" data-count="5" onclick="openNotifications()">🔔 Notifications</button>
+        <button class="pill" onclick="openNewAppointment()">➕ New Appointment</button>
+        <button class="pill brand" onclick="openAddPatient()">+ Add Patient</button>
+      </div>
+    </header>
+
+    <!-- OVERVIEW -->
+    <section id="overviewSection" class="section active">
+      <div class="grid">
+        <div class="card span-3">
+          <h3>Total Patients</h3>
+          <div class="stat">
+            <div class="value" id="totalPatients">245</div>
+            <div class="delta up" id="patientsDelta">+12% this month</div>
+          </div>
+          <div class="muted">Active under your care</div>
+        </div>
+
+        <div class="card span-3">
+          <h3>Critical Cases</h3>
+          <div class="stat">
+            <div class="value" id="criticalCases">8</div>
+            <div class="delta down" id="criticalDelta">3 need attention</div>
+          </div>
+          <div class="muted">Last 48 hours</div>
+        </div>
+
+        <div class="card span-3">
+          <h3>Today's Appointments</h3>
+          <div class="stat">
+            <div class="value" id="todaysAppts">12</div>
+            <div class="delta up" id="apptsDelta">4 done, 8 remaining</div>
+          </div>
+          <div class="muted">Clinic + Telehealth</div>
+        </div>
+
+        <div class="card span-3">
+          <h3>Avg Response Time</h3>
+          <div class="stat">
+            <div class="value" id="avgResponse">18m</div>
+            <div class="delta up">-2m improvement</div>
+          </div>
+          <div class="muted">Messages & alerts</div>
+        </div>
+
+        <div class="card span-7">
+          <div class="toolbar">
+            <div class="left">
+              <h3 style="margin:0">Glucose Trends</h3>
+              <div class="muted">Average from last period</div>
+            </div>
+            <div class="left chart-actions">
+              <button class="btn ghost active" onclick="updateChart(event,7)">7D</button>
+              <button class="btn ghost" onclick="updateChart(event,30)">30D</button>
+              <button class="btn ghost" onclick="updateChart(event,90)">90D</button>
+            </div>
+          </div>
+          <canvas id="glucoseChart" height="120"></canvas>
+        </div>
+
+        <div class="card span-5">
+          <div class="toolbar">
+            <h3 style="margin:0">Urgent Alerts</h3>
+            <button class="btn ghost" onclick="markAllRead()">Mark all read</button>
+          </div>
+          <div id="alertsList" class="muted">Loading alerts…</div>
+        </div>
+
+        <div class="card span-12">
+          <div class="toolbar">
+            <div class="left">
+              <h3 style="margin:0">Recent Patients</h3>
+              <div class="muted">Latest readings & risk levels</div>
+            </div>
+            <div class="left">
+              <input class="input" id="recentFilter" placeholder="Filter by name or ID"/>
+              <select id="riskFilter">
+                <option value="all">All risks</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+              <button class="btn brand" onclick="exportPatients()">Export</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>ID</th>
+                <th>Last Reading</th>
+                <th>7-day Avg</th>
+                <th>Risk</th>
+                <th>Last Update</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="recentPatientsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PATIENTS -->
+    <section id="patientsSection" class="section">
+      <div class="card">
+        <div class="toolbar">
+          <div class="left">
+            <h3 style="margin:0">My Patients</h3>
+            <div class="muted">Manage patient list and details</div>
+          </div>
+          <div class="left">
+            <input class="input" id="patientsSearch" placeholder="Search patients…"/>
+            <select id="patientsSort">
+              <option value="name">Sort: Name</option>
+              <option value="risk">Sort: Risk</option>
+              <option value="recent">Sort: Most Recent</option>
+            </select>
+            <button class="btn brand" onclick="openAddPatient()">+ Add Patient</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+          <tr>
+            <th>Patient</th>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Risk</th>
+            <th>Avg Glucose</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody id="patientsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- APPOINTMENTS -->
+    <section id="appointmentsSection" class="section">
+      <div class="grid">
+        <div class="card span-7">
+          <div class="toolbar">
+            <h3 style="margin:0">Appointments</h3>
+            <div class="left">
+              <input class="input" id="apptsSearch" placeholder="Search appointments…"/>
+              <select id="apptsFilter">
+                <option value="all">All</option>
+                <option value="scheduled">Scheduled</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Patient</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Notes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="card span-5">
+          <h3>Upcoming (next 7 days)</h3>
+          <div id="upcomingList" class="muted">Loading…</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section id="analyticsSection" class="section">
+      <div class="grid">
+        <div class="card span-6">
+          <h3>Risk Distribution</h3>
+          <canvas id="riskChart" height="160"></canvas>
+        </div>
+        <div class="card span-6">
+          <h3>Average Glucose by Week</h3>
+          <canvas id="avgChart" height="160"></canvas>
+        </div>
+        <div class="card span-12">
+          <h3>Insights</h3>
+          <ul id="insightsList" class="muted" style="line-height:1.8;margin:0;padding-left:18px"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="reportsSection" class="section">
+      <div class="card">
+        <div class="toolbar">
+          <div class="left">
+            <h3 style="margin:0">Reports Center</h3>
+            <div class="muted">Generate and download clinical reports</div>
+          </div>
+          <div class="left">
+            <select id="reportType">
+              <option value="weekly">Weekly Summary</option>
+              <option value="monthly">Monthly Summary</option>
+              <option value="critical">Critical Alerts</option>
+              <option value="appointments">Appointments Log</option>
+            </select>
+            <button class="btn brand" onclick="generateReport()">Generate</button>
+          </div>
+        </div>
+        <div id="reportsOutput" class="muted">Choose a type and click Generate.</div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settingsSection" class="section">
+      <div class="grid">
+        <div class="card span-6">
+          <h3>Profile Settings</h3>
+          <div class="muted">Update your info (local demo only)</div>
+          <div style="display:grid;gap:8px;margin-top:8px">
+            <label>Full name</label>
+            <input class="input" id="settingsName" placeholder="Dr. Name"/>
+            <label>Email</label>
+            <input class="input" id="settingsEmail" placeholder="doctor@email.com"/>
+            <label>Phone</label>
+            <input class="input" id="settingsPhone" placeholder="+973 ..."/>
+            <button class="btn brand" onclick="saveSettings()">Save</button>
+          </div>
+        </div>
+        <div class="card span-6">
+          <h3>System</h3>
+          <div class="muted">API endpoints</div>
+          <div style="display:grid;gap:8px;margin-top:8px">
+            <label>Backend Base URL</label>
+            <input class="input" id="apiBaseUrl" value="http://localhost:5000"/>
+            <button class="btn ghost" onclick="testApi()">Test Connection</button>
+            <div id="apiTestResult" class="muted"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODALS -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modal">
+    <header>
+      <h2 id="modalTitle">Modal</h2>
+      <button class="btn ghost" onclick="closeModal()">✕</button>
+    </header>
+    <div class="modal-body" id="modalBody"></div>
+    <footer id="modalFooter"></footer>
+  </div>
+</div>
+
+<script>
+  // ----------------- STATE (demo) -----------------
+  const state = {
+    doctor: { name: "Dr. Sarah Ahmed", initials:"DA", role:"Endocrinologist" },
+    patients: [
+      {id: 1001, name:"Maryam Al-Khalifa", email:"maryam@example.com", phone:"+973 3xxxxxxx", last:92, avg7:98, risk:"low", updated:"10 min ago"},
+      {id: 1002, name:"Ali Hasan", email:"ali@example.com", phone:"+973 3xxxxxxx", last:210, avg7:185, risk:"high", updated:"22 min ago"},
+      {id: 1003, name:"Fatima Noor", email:"fatima@example.com", phone:"+973 3xxxxxxx", last:145, avg7:152, risk:"medium", updated:"1 hr ago"},
+      {id: 1004, name:"Omar Yusuf", email:"omar@example.com", phone:"+973 3xxxxxxx", last:65, avg7:80, risk:"high", updated:"2 hrs ago"},
+      {id: 1005, name:"Huda Salman", email:"huda@example.com", phone:"+973 3xxxxxxx", last:110, avg7:114, risk:"low", updated:"3 hrs ago"},
+    ],
+    appointments: [
+      {id: 1, dt:"2025-11-25T09:00", patient:"Ali Hasan", type:"Clinic", status:"scheduled", notes:"Follow up"},
+      {id: 2, dt:"2025-11-25T12:30", patient:"Fatima Noor", type:"Telehealth", status:"scheduled", notes:"Nutrition review"},
+      {id: 3, dt:"2025-11-24T16:00", patient:"Omar Yusuf", type:"Clinic", status:"completed", notes:"Adjusted insulin"},
+      {id: 4, dt:"2025-11-26T10:00", patient:"Maryam Al-Khalifa", type:"Telehealth", status:"scheduled", notes:"CGM check"},
+      {id: 5, dt:"2025-11-27T13:00", patient:"Huda Salman", type:"Clinic", status:"cancelled", notes:"Reschedule"},
+    ],
+    alerts: [
+      {id:1, patient:"Ali Hasan", text:"High glucose spike (245 mg/dL).", level:"bad", time:"5 min ago"},
+      {id:2, patient:"Omar Yusuf", text:"Low glucose episode (62 mg/dL).", level:"bad", time:"1 hr ago"},
+      {id:3, patient:"Fatima Noor", text:"Trend rising after lunch.", level:"warn", time:"2 hrs ago"},
+    ]
+  };
+
+  // ----------------- NAV / SECTIONS -----------------
+  function showSection(event, key){
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    document.querySelectorAll(".menu-item").forEach(m => m.classList.remove("active"));
+
+    document.getElementById(key+"Section").classList.add("active");
+    if(event?.currentTarget) event.currentTarget.classList.add("active");
+
+    const titles = {
+      overview:"Dashboard Overview",
+      patients:"My Patients",
+      appointments:"Appointments",
+      analytics:"Analytics",
+      reports:"Reports Center",
+      settings:"Settings"
+    };
+    document.getElementById("pageTitle").textContent = titles[key] || "Dashboard";
+    document.getElementById("pageCrumb").textContent = key==="overview" ? `Welcome back, ${state.doctor.name}` : "GenieSugar Doctor";
+    if(window.innerWidth <= 760) toggleSidebar(false);
+  }
+
+  function toggleSidebar(force){
+    const sb = document.getElementById("sidebar");
+    const open = (force === undefined) ? !sb.classList.contains("open") : force;
+    sb.classList.toggle("open", open);
+  }
+
+  // ----------------- RENDER -----------------
+  function riskTag(risk){
+    if(risk==="high") return `<span class="tag bad">High</span>`;
+    if(risk==="medium") return `<span class="tag warn">Medium</span>`;
+    return `<span class="tag good">Low</span>`;
+  }
+
+  function renderRecentPatients(){
+    const body = document.getElementById("recentPatientsBody");
+    const q = (document.getElementById("recentFilter").value || "").toLowerCase().trim();
+    const rf = document.getElementById("riskFilter").value;
+
+    const items = state.patients.filter(p => {
+      const matchQ = !q || p.name.toLowerCase().includes(q) || String(p.id).includes(q);
+      const matchR = rf==="all" || p.risk===rf;
+      return matchQ && matchR;
+    });
+
+    body.innerHTML = items.map(p => `
+      <tr>
+        <td>${p.name}</td>
+        <td>#${p.id}</td>
+        <td>${p.last} mg/dL</td>
+        <td>${p.avg7} mg/dL</td>
+        <td>${riskTag(p.risk)}</td>
+        <td>${p.updated}</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn brand" onclick="openPatient(${p.id})">View</button>
+            <button class="btn ghost" onclick="openMessage('${p.name}')">Message</button>
+          </div>
+        </td>
+      </tr>
+    `).join("") || `<tr><td colspan="7" class="muted">No patients found.</td></tr>`;
+  }
+
+  function renderPatientsTable(){
+    const body = document.getElementById("patientsBody");
+    const q = (document.getElementById("patientsSearch").value || "").toLowerCase().trim();
+    const sort = document.getElementById("patientsSort").value;
+
+    let items = state.patients.filter(p =>
+      !q || p.name.toLowerCase().includes(q) || String(p.id).includes(q)
+    );
+
+    if(sort==="name") items.sort((a,b)=>a.name.localeCompare(b.name));
+    if(sort==="risk") items.sort((a,b)=>({high:0,medium:1,low:2}[a.risk]-({high:0,medium:1,low:2}[b.risk])));
+    if(sort==="recent") items.sort((a,b)=>b.last-a.last);
+
+    body.innerHTML = items.map(p => `
+      <tr>
+        <td>${p.name}</td>
+        <td>#${p.id}</td>
+        <td>${p.email}</td>
+        <td>${p.phone}</td>
+        <td>${riskTag(p.risk)}</td>
+        <td>${p.avg7} mg/dL</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn brand" onclick="openPatient(${p.id})">Open</button>
+            <button class="btn ghost" onclick="removePatient(${p.id})">Remove</button>
+          </div>
+        </td>
+      </tr>
+    `).join("") || `<tr><td colspan="7" class="muted">No patients found.</td></tr>`;
+  }
+
+  function renderAppointments(){
+    const body = document.getElementById("appointmentsBody");
+    const q = (document.getElementById("apptsSearch").value || "").toLowerCase().trim();
+    const f = document.getElementById("apptsFilter").value;
+
+    const items = state.appointments.filter(a => {
+      const matchQ = !q || a.patient.toLowerCase().includes(q);
+      const matchF = f==="all" || a.status===f;
+      return matchQ && matchF;
+    }).sort((a,b)=> new Date(a.dt)-new Date(b.dt));
+
+    body.innerHTML = items.map(a => `
+      <tr>
+        <td>${formatDT(a.dt)}</td>
+        <td>${a.patient}</td>
+        <td>${a.type}</td>
+        <td>${statusTag(a.status)}</td>
+        <td class="muted">${a.notes || "-"}</td>
+        <td>
+          <div class="row-actions">
+            <button class="btn brand" onclick="openAppt(${a.id})">Details</button>
+            ${a.status==="scheduled" ? `<button class="btn ghost" onclick="completeAppt(${a.id})">Complete</button>` : ""}
+          </div>
+        </td>
+      </tr>
+     `).join("") || `<tr><td colspan="6" class="muted">No appointments found.</td></tr>`;
+
+    const upcoming = items.filter(a => a.status==="scheduled").slice(0,6);
+    document.getElementById("upcomingList").innerHTML = upcoming.map(a => `
+      <div style="padding:8px 0;border-bottom:1px dashed var(--border)">
+        <div style="font-weight:700">${a.patient}</div>
+        <div class="muted">${formatDT(a.dt)} • ${a.type}</div>
+      </div>
+    `).join("") || `<div class="muted">No upcoming appointments.</div>`;
+  }
+
+  function renderAlerts(){
+    const wrap = document.getElementById("alertsList");
+    wrap.innerHTML = state.alerts.map(al => `
+      <div class="card" style="padding:10px;margin-bottom:8px;background:rgba(255,255,255,0.02)">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:700">${al.patient}</div>
+          <span class="tag ${al.level}">${al.level==="bad"?"Critical":al.level==="warn"?"Warning":"Info"}</span>
+        </div>
+        <div class="muted" style="margin-top:6px">${al.text}</div>
+        <div class="muted" style="margin-top:4px;font-size:12px">${al.time}</div>
+      </div>
+    `).join("") || `<div class="muted">No alerts.</div>`;
+  }
+
+  function statusTag(status){
+    if(status==="completed") return `<span class="tag good">Completed</span>`;
+    if(status==="cancelled") return `<span class="tag bad">Cancelled</span>`;
+    return `<span class="tag warn">Scheduled</span>`;
+  }
+
+  function formatDT(dt){
+    const d = new Date(dt);
+    return d.toLocaleString();
+  }
+
+  // ----------------- CHARTS -----------------
+  let glucoseChart, riskChart, avgChart;
+
+  function buildCharts(){
+    // Glucose line chart
+    const ctx = document.getElementById("glucoseChart");
+    glucoseChart = new Chart(ctx, {
+      type:"line",
+      data:{
+        labels:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+        datasets:[{
+          label:"Avg glucose (mg/dL)",
+          data:[110,120,115,140,135,125,118],
+          tension:0.35,
+          fill:true,
+          backgroundColor: 'rgba(21, 101, 166, 0.1)',
+          borderColor: 'rgba(21, 101, 166, 1)',
+          borderWidth: 2
+        }]
+      },
+      options:{
+        plugins:{legend:{display:false}},
+        scales:{
+          y:{grid:{color:"rgba(255,255,255,0.06)"},ticks:{color:"#a7b0d6"}},
+          x:{grid:{display:false},ticks:{color:"#a7b0d6"}}
+        }
+      }
+    });
+
+    // Risk doughnut
+    riskChart = new Chart(document.getElementById("riskChart"), {
+      type:"doughnut",
+      data:{
+        labels:["Low","Medium","High"],
+        datasets:[{
+          data: riskCounts(),
+          backgroundColor: ['#19c37d', '#f5a524', '#ff6b6b']
+        }]
+      },
+      options:{
+        plugins:{legend:{labels:{color:"#e6e9f4"}}}
+      }
+    });
+
+    // Weekly avg bar
+    avgChart = new Chart(document.getElementById("avgChart"), {
+      type:"bar",
+      data:{
+        labels:["W1","W2","W3","W4"],
+        datasets:[{
+          label:"Avg mg/dL", 
+          data:[128,122,135,118],
+          backgroundColor: 'rgba(21, 101, 166, 0.6)',
+          borderColor: 'rgba(21, 101, 166, 1)',
+          borderWidth: 1
+        }]
+      },
+      options:{
+        plugins:{legend:{labels:{color:"#e6e9f4"}}},
+        scales:{
+          y:{grid:{color:"rgba(255,255,255,0.06)"},ticks:{color:"#a7b0d6"}},
+          x:{grid:{display:false},ticks:{color:"#a7b0d6"}}
+        }
+      }
+    });
+
+    renderInsights();
+  }
+
+  function riskCounts(){
+    const low = state.patients.filter(p=>p.risk==="low").length;
+    const med = state.patients.filter(p=>p.risk==="medium").length;
+    const high= state.patients.filter(p=>p.risk==="high").length;
+    return [low,med,high];
+  }
+
+  function renderInsights(){
+    const low = riskCounts()[0], med=riskCounts()[1], high=riskCounts()[2];
+    document.getElementById("insightsList").innerHTML = `
+      <li>${high} patients are high-risk. Prioritize follow-ups within 72 hours.</li>
+      <li>Most patients (${low}) are stable with low variability.</li>
+      <li>Average response time is improving — keep monitoring alert thresholds.</li>
+    `;
+  }
+
+  function updateChart(event, days){
+    document.querySelectorAll(".chart-actions .btn").forEach(b=>b.classList.remove("active"));
+    event.currentTarget.classList.add("active");
+
+    const dataMap = {
+      7:[110,120,115,140,135,125,118],
+      30:[118,122,128,130,126,124,121,120,119,125,128,130,132,129,127,125,123,122,120,118,116,115,117,119,121,123,125,127,126,124],
+      90: Array(90).fill(0).map((_,i)=>115+Math.sin(i/5)*15+Math.random()*10),
+    };
+    glucoseChart.data.datasets[0].data = dataMap[days] || dataMap[7];
+    if(days===30 || days===90){
+      glucoseChart.data.labels = dataMap[days].map((_,i)=>`D${i+1}`);
+    } else {
+      glucoseChart.data.labels = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+    }
+    glucoseChart.update();
+  }
+
+  // ----------------- MODAL / ACTIONS -----------------
+  function openModal(title, bodyHTML, footerHTML=""){
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalBody").innerHTML = bodyHTML;
+    document.getElementById("modalFooter").innerHTML = footerHTML;
+    document.getElementById("modalBackdrop").classList.add("show");
+  }
+  function closeModal(){ document.getElementById("modalBackdrop").classList.remove("show"); }
+
+  function openPatient(id){
+    const p = state.patients.find(x=>x.id===id);
+    if(!p) return;
+    openModal(
+      `Patient #${p.id}`,
+      `
+      <div class="full">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="avatar">${p.name.split(" ").map(w=>w[0]).join("").slice(0,2)}</div>
+          <div>
+            <div style="font-weight:800;font-size:18px">${p.name}</div>
+            <div class="muted">${p.email} • ${p.phone}</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label>Last reading</label>
+        <input value="${p.last} mg/dL" disabled />
+      </div>
+      <div>
+        <label>7-day average</label>
+        <input value="${p.avg7} mg/dL" disabled />
+      </div>
+      <div class="full">
+        <label>Clinical notes</label>
+        <textarea id="noteBox" placeholder="Write a note for this patient…"></textarea>
+      </div>
+      `,
+      `
+        <button class="btn ghost" onclick="closeModal()">Close</button>
+        <button class="btn brand" onclick="saveNote(${p.id})">Save Note</button>
+      `
+    );
+  }
+
+  function saveNote(id){
+    const note = document.getElementById("noteBox").value.trim();
+    alert(note ? "✅ Note saved locally." : "ℹ️ No note entered.");
+    closeModal();
+  }
+
+  function openMessage(name){
+    openModal(
+      `Message ${name}`,
+      `
+       <div class="full">
+         <label>Message</label>
+         <textarea id="msgBox" placeholder="Type your message…"></textarea>
+       </div>
+      `,
+      `
+        <button class="btn ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn brand" onclick="sendMessage('${name}')">Send</button>
+      `
+    )
+  }
+  function sendMessage(name){
+    const msg = document.getElementById("msgBox").value.trim();
+    if(!msg) return alert("Type a message first.");
+    alert("✅ Message sent locally to " + name);
+    closeModal();
+  }
+
+  function openAddPatient(){
+    openModal(
+      "Add New Patient",
+      `
+        <div>
+          <label>Full name</label>
+          <input id="newName" placeholder="Patient name"/>
+        </div>
+        <div>
+          <label>Email</label>
+          <input id="newEmail" placeholder="email@example.com"/>
+        </div>
+        <div>
+          <label>Phone</label>
+          <input id="newPhone" placeholder="+973 ..."/>
+        </div>
+        <div>
+          <label>Risk</label>
+          <select id="newRisk">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div class="full">
+          <label>Initial glucose</label>
+          <input id="newLast" placeholder="mg/dL"/>
+        </div>
+      `,
+      `
+        <button class="btn ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn brand" onclick="addPatient()">Add</button>
+      `
+    )
+  }
+
+  function addPatient(){
+    const name = document.getElementById("newName").value.trim();
+    if(!name) return alert("Name required.");
+    const email = document.getElementById("newEmail").value.trim();
+    const phone = document.getElementById("newPhone").value.trim();
+    const risk = document.getElementById("newRisk").value;
+    const last = Number(document.getElementById("newLast").value || 0);
+    const id = Math.max(...state.patients.map(p=>p.id)) + 1;
+
+    state.patients.unshift({
+      id, name, email, phone, last:last||110, avg7:last||110, risk, updated:"just now"
+    });
+
+    document.getElementById("patientsCountBadge").textContent = state.patients.length;
+    renderRecentPatients(); renderPatientsTable();
+    riskChart.data.datasets[0].data = riskCounts(); riskChart.update();
+    renderInsights();
+    closeModal();
+  }
+
+  function removePatient(id){
+    if(!confirm("Remove this patient from your list?")) return;
+    state.patients = state.patients.filter(p=>p.id!==id);
+    document.getElementById("patientsCountBadge").textContent = state.patients.length;
+    renderRecentPatients(); renderPatientsTable();
+    riskChart.data.datasets[0].data = riskCounts(); riskChart.update();
+    renderInsights();
+  }
+
+  function openNewAppointment(){
+    openModal(
+      "New Appointment",
+      `
+        <div>
+          <label>Patient</label>
+          <select id="apptPatient">
+            ${state.patients.map(p=>`<option>${p.name}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label>Date & time</label>
+          <input id="apptDT" type="datetime-local"/>
+        </div>
+        <div>
+          <label>Type</label>
+          <select id="apptType">
+            <option>Clinic</option>
+            <option>Telehealth</option>
+          </select>
+        </div>
+        <div>
+          <label>Notes</label>
+          <input id="apptNotes" placeholder="Reason / notes"/>
+        </div>
+      `,
+      `
+        <button class="btn ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn brand" onclick="createAppt()">Create</button>
+      `
+    )
+  }
+
+  function createAppt(){
+    const patient = document.getElementById("apptPatient").value;
+    const dt = document.getElementById("apptDT").value;
+    if(!dt) return alert("Choose date/time.");
+    const type = document.getElementById("apptType").value;
+    const notes= document.getElementById("apptNotes").value.trim();
+    const id = Math.max(...state.appointments.map(a=>a.id)) + 1;
+
+    state.appointments.push({id, dt, patient, type, status:"scheduled", notes});
+    document.getElementById("appointmentsCountBadge").textContent =
+      state.appointments.filter(a=>a.status==="scheduled").length;
+
+    renderAppointments();
+    closeModal();
+  }
+
+  function openAppt(id){
+    const a = state.appointments.find(x=>x.id===id);
+    if(!a) return;
+    openModal(
+      "Appointment Details",
+      `
+        <div class="full">
+          <div style="font-weight:800">${a.patient}</div>
+          <div class="muted">${formatDT(a.dt)} • ${a.type}</div>
+        </div>
+        <div class="full">
+          <label>Status</label>
+          <select id="apptStatus">
+            <option ${a.status==="scheduled"?"selected":""}>scheduled</option>
+            <option ${a.status==="completed"?"selected":""}>completed</option>
+            <option ${a.status==="cancelled"?"selected":""}>cancelled</option>
+          </select>
+        </div>
+        <div class="full">
+          <label>Notes</label>
+          <textarea id="apptNotesEdit">${a.notes||""}</textarea>
+        </div>
+      `,
+      `
+        <button class="btn ghost" onclick="closeModal()">Close</button>
+        <button class="btn brand" onclick="saveAppt(${a.id})">Save</button>
+      `
+    )
+  }
+
+  function saveAppt(id){
+    const a = state.appointments.find(x=>x.id===id);
+    if(!a) return;
+    a.status = document.getElementById("apptStatus").value;
+    a.notes = document.getElementById("apptNotesEdit").value.trim();
+    renderAppointments();
+    closeModal();
+  }
+
+  function completeAppt(id){
+    const a = state.appointments.find(x=>x.id===id);
+    if(!a) return;
+    a.status="completed";
+    renderAppointments();
+  }
+
+  function generateReport(){
+    const type = document.getElementById("reportType").value;
+    const out = document.getElementById("reportsOutput");
+    if(type==="weekly"){
+      out.innerHTML = `<b>Weekly Summary:</b> ${state.patients.length} active patients, ${riskCounts()[2]} high risk, ${state.alerts.length} alerts.`;
+    } else if(type==="monthly"){
+      out.innerHTML = `<b>Monthly Summary:</b> Avg glucose trend stable. Response time improved to 18m.`;
+    } else if(type==="critical"){
+      out.innerHTML = `<b>Critical Alerts:</b><br>${state.alerts.map(a=>`• ${a.patient}: ${a.text}`).join("<br>")}`;
+    } else {
+      out.innerHTML = `<b>Appointments Log:</b><br>${state.appointments.map(a=>`• ${formatDT(a.dt)} — ${a.patient} (${a.status})`).join("<br>")}`;
+    }
+  }
+
+  function exportPatients(){
+    alert("Exporting patients (demo). In production, generate CSV/PDF.");
+  }
+
+  function markAllRead(){
+    state.alerts = [];
+    renderAlerts();
+    document.getElementById("notifBtn").setAttribute("data-count","0");
+  }
+
+  function openNotifications(){
+    openModal(
+      "Notifications",
+      state.alerts.length
+        ? `<div class="full">${state.alerts.map(a=>`<div style="padding:8px 0;border-bottom:1px dashed var(--border)">
+              <div style="font-weight:700">${a.patient}</div>
+              <div class="muted">${a.text}</div>
+              <div class="muted" style="font-size:12px">${a.time}</div>
+            </div>`).join("")}</div>`
+        : `<div class="full muted">No new notifications.</div>`,
+      `<button class="btn brand" onclick="closeModal()">Close</button>`
+    )
+  }
+
+  function saveSettings(){
+    const name = document.getElementById("settingsName").value.trim();
+    if(name){
+      state.doctor.name = name;
+      state.doctor.initials = name.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
+      document.getElementById("doctorName").textContent = name;
+      document.getElementById("avatarInitials").textContent = state.doctor.initials;
+    }
+    alert("✅ Saved locally.");
+  }
+
+  async function testApi(){
+    const base = document.getElementById("apiBaseUrl").value.trim();
+    const resBox = document.getElementById("apiTestResult");
+    resBox.textContent = "Testing...";
+    try{
+      const r = await fetch(base + "/api/health");
+      const j = await r.json();
+      resBox.textContent = j.success ? "✅ Backend connected!" : "⚠️ Backend responded but not OK.";
+    }catch(e){
+      resBox.textContent = "❌ Could not connect. Is backend running on port 5000?";
+    }
+  }
+
+  function logout(){
+    if(confirm("Are you sure you want to logout?")){
+      alert("Logged out (demo).");
+      window.location.href = "login.html";
+    }
+  }
+
+  // Live search (demo)
+  document.getElementById("globalSearch").addEventListener("input", (e)=>{
+    const v = e.target.value.trim().toLowerCase();
+    if(!v) return;
+    showSection(null,"patients");
+    document.getElementById("patientsSearch").value = v;
+    renderPatientsTable();
+  });
+
+  // Filters / searches
+  document.getElementById("recentFilter").addEventListener("input", renderRecentPatients);
+  document.getElementById("riskFilter").addEventListener("change", renderRecentPatients);
+  document.getElementById("patientsSearch").addEventListener("input", renderPatientsTable);
+  document.getElementById("patientsSort").addEventListener("change", renderPatientsTable);
+  document.getElementById("apptsSearch").addEventListener("input", renderAppointments);
+  document.getElementById("apptsFilter").addEventListener("change", renderAppointments);
+
+  // Init
+  function init(){
+    document.getElementById("doctorName").textContent = state.doctor.name;
+    document.getElementById("avatarInitials").textContent = state.doctor.initials;
+
+    document.getElementById("patientsCountBadge").textContent = state.patients.length;
+    document.getElementById("appointmentsCountBadge").textContent = state.appointments.filter(a=>a.status==="scheduled").length;
+
+    renderRecentPatients();
+    renderPatientsTable();
+    renderAppointments();
+    renderAlerts();
+    buildCharts();
+  }
+  init();
+</script>
+</body>
+</html>
