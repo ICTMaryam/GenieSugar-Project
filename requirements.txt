@@ -1,5 +1,3 @@
-# GenieSugar Backend Dependencies (Windows + Python 3.11 compatible)
-
 # Flask Framework
 Flask==3.0.2
 Flask-SQLAlchemy==3.1.1
@@ -31,5 +29,5 @@ python-dateutil==2.9.0.post0
 # Security
 cryptography==42.0.5
 
-# Windows-friendly deployment (replaces gunicorn)
-waitress==3.0.0
+# AZURE LINUX DEPLOYMENT (REQUIRED!)
+gunicorn==21.2.0
