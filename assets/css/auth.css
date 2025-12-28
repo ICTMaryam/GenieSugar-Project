@@ -1,0 +1,651 @@
+
+/* assets/css/auth.css - Authentication Pages Styles */
+
+:root {
+    /* New Color Palette */
+    --sunglo: #e26a61;
+    --picton-blue: #34acdf;
+    --atoll: #0e4e81;
+    --black-squeeze: #f6fcfc;
+    --pigeon-post: #b0cbdd;
+    --bazaar: #9f727e;
+    --steel-blue: #4690ba;
+    
+    /* Color Mapping */
+    --primary: var(--atoll);
+    --primary-light: var(--steel-blue);
+    --primary-lighter: var(--picton-blue);
+    --secondary: var(--pigeon-post);
+    --accent: var(--sunglo);
+    --light: var(--black-squeeze);
+    --dark: var(--atoll);
+    --success: #4CAF50;
+    --gray-50: var(--black-squeeze);
+    --gray-100: #F3F4F6;
+    --gray-600: var(--bazaar);
+    --gray-700: var(--atoll);
+    --gray-800: var(--atoll);
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, var(--atoll) 0%, var(--steel-blue) 50%, var(--picton-blue) 100%);
+    --gradient-secondary: linear-gradient(135deg, var(--pigeon-post) 0%, var(--picton-blue) 100%);
+    --gradient-accent: linear-gradient(135deg, var(--sunglo) 0%, var(--bazaar) 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--gray-800);
+    background: var(--light);
+}
+
+/* ==================== AUTH CONTAINER ==================== */
+
+.auth-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+}
+
+/* ==================== LEFT SIDE ==================== */
+
+.auth-left {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+    color: white;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.auth-brand h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+}
+
+.auth-left h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    line-height: 1.2;
+    color: white;
+}
+
+.auth-left p {
+    font-size: 18px;
+    opacity: 0.9;
+    margin-bottom: 40px;
+}
+
+/* ==================== FEATURES LIST ==================== */
+
+.features-list, .benefits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.feature-item, .benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.feature-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.benefit-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.benefit-item h4 {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.benefit-item p {
+    opacity: 0.8;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ==================== RIGHT SIDE ==================== */
+
+.auth-right {
+    background: white;
+    padding: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+.auth-form-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.auth-form-container h3 {
+    font-size: 28px;
+    color: var(--dark);
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: var(--gray-600);
+    margin-bottom: 30px;
+}
+
+.subtitle a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.subtitle a:hover {
+    text-decoration: underline;
+}
+
+/* ==================== ALERTS ==================== */
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 1px solid #10B981;
+}
+
+.alert-error {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #EF4444;
+}
+
+.alert-info {
+    background: #DBEAFE;
+    color: #1E40AF;
+    border: 1px solid #3B82F6;
+}
+
+/* ==================== FORM STEPS ==================== */
+
+.form-steps {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gray-100);
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.step.active .step-number {
+    background: var(--primary);
+    color: white;
+}
+
+.step span {
+    font-size: 12px;
+    color: var(--gray-600);
+    font-weight: 500;
+}
+
+.step.active span {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--gray-100);
+    margin: 0 10px;
+}
+
+/* ==================== FORM STEPS CONTENT ==================== */
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+/* ==================== FORM ELEMENTS ==================== */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--gray-700);
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--gray-100);
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(21, 101, 166, 0.1);
+}
+
+.form-group small {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: var(--gray-600);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* ==================== PASSWORD INPUT ==================== */
+
+.password-input {
+    position: relative;
+}
+
+.password-input input {
+    padding-right: 45px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--gray-600);
+    padding: 5px;
+}
+
+.toggle-password:hover {
+    color: var(--primary);
+}
+
+/* ==================== PASSWORD STRENGTH ==================== */
+
+.password-strength {
+    height: 4px;
+    background: var(--gray-100);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.strength-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    transition: all 0.3s;
+    border-radius: 2px;
+}
+
+/* ==================== ROLE SELECTOR ==================== */
+
+.role-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.role-card {
+    border: 2px solid var(--gray-100);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.role-card:hover {
+    border-color: var(--secondary);
+    background: var(--light);
+}
+
+.role-card input[type="radio"] {
+    display: none;
+}
+
+.role-card input[type="radio"]:checked + .role-content {
+    color: var(--primary);
+}
+
+.role-card input[type="radio"]:checked ~ .role-card {
+    border-color: var(--primary);
+    background: var(--light);
+}
+
+.role-icon {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.role-content span {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* ==================== BUTTONS ==================== */
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background: var(--dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(21, 101, 166, 0.2);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.form-buttons .btn {
+    flex: 1;
+}
+
+/* ==================== LOADER ==================== */
+
+.loader {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==================== CHECKBOX ==================== */
+
+.checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.checkbox input[type="checkbox"] {
+    width: auto;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+.checkbox span {
+    font-size: 14px;
+    color: var(--gray-700);
+}
+
+.checkbox a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.checkbox a:hover {
+    text-decoration: underline;
+}
+
+/* ==================== FORM OPTIONS ==================== */
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.link {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* ==================== DIVIDER ==================== */
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.divider span {
+    padding: 0 15px;
+    color: var(--gray-600);
+    font-size: 14px;
+}
+
+/* ==================== SOCIAL BUTTONS ==================== */
+
+.social-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.btn-social {
+    padding: 12px;
+    border: 2px solid var(--gray-100);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-social:hover {
+    border-color: var(--primary);
+    background: var(--light);
+}
+
+/* ==================== VERIFICATION NOTICE ==================== */
+
+.verification-notice {
+    text-align: center;
+    padding: 30px;
+    background: var(--light);
+    border-radius: 12px;
+    margin-bottom: 30px;
+}
+
+.verification-notice svg {
+    margin-bottom: 15px;
+}
+
+.verification-notice h4 {
+    color: var(--dark);
+    margin-bottom: 10px;
+}
+
+.verification-notice p {
+    color: var(--gray-600);
+    font-size: 14px;
+}
+
+/* ==================== INFO SUMMARY ==================== */
+
+.info-summary {
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.summary-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 14px;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item strong {
+    color: var(--dark);
+    margin-right: 10px;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 1024px) {
+    .auth-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .auth-left {
+        display: none;
+    }
+    
+    .auth-right {
+        padding: 40px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .role-selector {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .social-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+    }
+}

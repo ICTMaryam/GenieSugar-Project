@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education Center - GenieSugar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .education-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .education-header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-background {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 70%;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 42px;
+            color: #1565A6;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+           /* -webkit-background-clip: text;*/
+            -webkit-text-fill-color: transparent;
+        }
+        
+
+        .header-badge {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: #E3F2FD;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #1565A6;
+        }
+
+        .stat-info h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1565A6;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Search and Filter */
+        .search-filter-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 18px 25px;
+            border: 2px solid #E3F2FD;
+            border-radius: 15px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #F8FAFF;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #1565A6;
+            box-shadow: 0 0 0 3px rgba(21, 101, 166, 0.1);
+        }
+
+        .search-btn {
+            padding: 0 35px;
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(21, 101, 166, 0.3);
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .filter-tag {
+            padding: 10px 20px;
+            background: #F8FAFF;
+            border: 2px solid #E3F2FD;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1565A6;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-tag:hover {
+            background: #E3F2FD;
+            transform: translateY(-2px);
+        }
+
+        .filter-tag.active {
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+            color: white;
+            border-color: #1565A6;
+        }
+
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sort-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .sort-select {
+            padding: 10px 20px;
+            border: 2px solid #E3F2FD;
+            border-radius: 10px;
+            background: white;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Categories Grid */
+        .categories-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1565A6;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .category-card {
+            background: #F8FAFF;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover {
+            background: white;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-color: #1565A6;
+        }
+
+        .category-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+            color: white;
+        }
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1565A6;
+            margin-bottom: 10px;
+        }
+
+        .category-count {
+            font-size: 14px;
+            color: #666;
+            background: #E3F2FD;
+            padding: 4px 12px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        /* Featured Content */
+        .featured-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .featured-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .featured-main {
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+            border-radius: 15px;
+            padding: 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .featured-main h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .featured-main p {
+            font-size: 16px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .featured-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .featured-stat {
+            text-align: center;
+        }
+
+        .featured-stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .featured-stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .featured-items {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .featured-item {
+            background: #F8FAFF;
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .featured-item:hover {
+            background: #E3F2FD;
+            transform: translateX(10px);
+        }
+
+        .featured-item-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .featured-item-content h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1565A6;
+            margin-bottom: 8px;
+        }
+
+        .featured-item-content p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .featured-item-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Articles Grid */
+        .articles-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .view-all-btn {
+            padding: 12px 25px;
+            background: #E3F2FD;
+            color: #1565A6;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-all-btn:hover {
+            background: #1565A6;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .article-card {
+            background: #F8FAFF;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .article-image {
+            height: 200px;
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-image-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            color: white;
+        }
+
+        .article-category {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px 15px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .article-content {
+            padding: 25px;
+        }
+
+        .article-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1565A6;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .article-excerpt {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 2px solid #E3F2FD;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .article-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .read-btn {
+            padding: 10px 20px;
+            background: #1565A6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .read-btn:hover {
+            background: #2196F3;
+            transform: translateX(5px);
+        }
+
+        /* Resources Section */
+        .resources-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .resource-card {
+            background: #F8FAFF;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .resource-card:hover {
+            background: white;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .resource-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+            color: white;
+        }
+
+        .resource-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1565A6;
+            margin-bottom: 10px;
+        }
+
+        .resource-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .resource-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #E3F2FD;
+            color: #1565A6;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .resource-download:hover {
+            background: #1565A6;
+            color: white;
+        }
+
+        /* Learning Path */
+        .learning-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .learning-path {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .path-card {
+            background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .path-card:nth-child(2) {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+        }
+
+        .path-card:nth-child(3) {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+        }
+
+        .path-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 60px;
+            font-weight: 700;
+            opacity: 0.2;
+        }
+
+        .path-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .path-description {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .path-progress {
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .path-progress-bar {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            width: 0;
+            transition: width 1s ease;
+        }
+
+        .path-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .path-btn {
+            padding: 12px 25px;
+            background: white;
+            color: #1565A6;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .path-card:nth-child(2) .path-btn {
+            color: #2E7D32;
+        }
+
+        .path-card:nth-child(3) .path-btn {
+            color: #F57C00;
+        }
+
+        .path-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Footer */
+        .education-footer {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .footer-text {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: #1565A6;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-link:hover {
+            color: #2196F3;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .featured-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .articles-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .education-container {
+                padding: 10px;
+            }
+            
+            .header-content {
+                max-width: 100%;
+            }
+            
+            .header-title h1 {
+                font-size: 32px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .header-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-items {
+                grid-template-columns: 1fr;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .learning-path {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .view-all-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-tags {
+                flex-direction: column;
+            }
+            
+            .header-stats {
+                flex-direction: column;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="education-container">
+        <!-- Header -->
+        <header class="education-header">
+            <div class="header-background"></div>
+            <div class="header-content">
+                <div class="header-title">
+                    <h1><i class="fas fa-graduation-cap"></i> Education Center</h1>
+                    <span class="header-badge">
+                        <i class="fas fa-star"></i> Certified Diabetes Education
+                    </span>
+                </div>
+                <p class="header-subtitle">
+                    Your comprehensive resource for diabetes management education. Learn about nutrition, medication, monitoring, and lifestyle adjustments with our expertly curated content designed specifically for the Bahrain community.
+                </p>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>200+</h3>
+                            <p>Educational Articles</p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>50+</h3>
+                            <p>Video Tutorials</p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>100%</h3>
+                            <p>Clinically Approved</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search and Filter -->
+        <section class="search-filter-section">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="🔍 Search for diabetes education topics, articles, or resources..." id="searchInput">
+                <button class="search-btn" onclick="searchContent()">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+            <div class="filter-tags" id="filterTags">
+                <div class="filter-tag active" onclick="filterContent('all')">
+                    <i class="fas fa-layer-group"></i> All Topics
+                </div>
+                <div class="filter-tag" onclick="filterContent('nutrition')">
+                    <i class="fas fa-apple-alt"></i> Nutrition
+                </div>
+                <div class="filter-tag" onclick="filterContent('medication')">
+                    <i class="fas fa-pills"></i> Medication
+                </div>
+                <div class="filter-tag" onclick="filterContent('monitoring')">
+                    <i class="fas fa-heartbeat"></i> Monitoring
+                </div>
+                <div class="filter-tag" onclick="filterContent('lifestyle')">
+                    <i class="fas fa-running"></i> Lifestyle
+                </div>
+                <div class="filter-tag" onclick="filterContent('complications')">
+                    <i class="fas fa-stethoscope"></i> Complications
+                </div>
+                <div class="filter-tag" onclick="filterContent('mental-health')">
+                    <i class="fas fa-brain"></i> Mental Health
+                </div>
+                <div class="filter-tag" onclick="filterContent('technology')">
+                    <i class="fas fa-mobile-alt"></i> Technology
+                </div>
+            </div>
+            <div class="sort-options">
+                <span class="sort-label">Sort by:</span>
+                <select class="sort-select" id="sortSelect" onchange="sortContent()">
+                    <option value="popular">Most Popular</option>
+                    <option value="recent">Most Recent</option>
+                    <option value="duration">Duration</option>
+                    <option value="rating">Highest Rated</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Categories -->
+        <section class="categories-section">
+            <h2 class="section-title">
+                <i class="fas fa-th-large"></i> Browse by Category
+            </h2>
+            <div class="categories-grid">
+                <div class="category-card" onclick="showCategory('basics')">
+                    <div class="category-icon">
+                        <i class="fas fa-book-medical"></i>
+                    </div>
+                    <h3 class="category-title">Diabetes Basics</h3>
+                    <p>Understanding Type 1, Type 2, and gestational diabetes</p>
+                    <span class="category-count">25 Articles</span>
+                </div>
+                <div class="category-card" onclick="showCategory('nutrition')">
+                    <div class="category-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3 class="category-title">Nutrition & Diet</h3>
+                    <p>Meal planning, carb counting, and healthy eating</p>
+                    <span class="category-count">45 Articles</span>
+                </div>
+                <div class="category-card" onclick="showCategory('exercise')">
+                    <div class="category-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <h3 class="category-title">Exercise & Fitness</h3>
+                    <p>Workout routines and physical activity guidelines</p>
+                    <span class="category-count">30 Articles</span>
+                </div>
+                <div class="category-card" onclick="showCategory('medication')">
+                    <div class="category-icon">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                    </div>
+                    <h3 class="category-title">Medication Management</h3>
+                    <p>Insulin, oral medications, and injection techniques</p>
+                    <span class="category-count">35 Articles</span>
+                </div>
+                <div class="category-card" onclick="showCategory('monitoring')">
+                    <div class="category-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3 class="category-title">Glucose Monitoring</h3>
+                    <p>CGM, fingerstick testing, and data interpretation</p>
+                    <span class="category-count">28 Articles</span>
+                </div>
+                <div class="category-card" onclick="showCategory('complications')">
+                    <div class="category-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 class="category-title">Complications Prevention</h3>
+                    <p>Eye, kidney, nerve, and heart health</p>
+                    <span class="category-count">22 Articles</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Content -->
+        <section class="featured-section">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i> Featured Content
+            </h2>
+            <div class="featured-content">
+                <div class="featured-main">
+                    <span class="featured-badge">Editor's Pick</span>
+                    <h3>Understanding Blood Sugar Patterns: A Complete Guide</h3>
+                    <p>Learn how to identify, interpret, and act on different blood sugar patterns. This comprehensive guide includes real-world examples and actionable strategies for better diabetes management.</p>
+                    <div class="featured-stats">
+                        <div class="featured-stat">
+                            <div class="featured-stat-number">15 min</div>
+                            <div class="featured-stat-label">Read Time</div>
+                        </div>
+                        <div class="featured-stat">
+                            <div class="featured-stat-number">4.9</div>
+                            <div class="featured-stat-label">Rating</div>
+                        </div>
+                        <div class="featured-stat">
+                            <div class="featured-stat-number">2.5K</div>
+                            <div class="featured-stat-label">Views</div>
+                        </div>
+                    </div>
+                    <button class="path-btn" onclick="openArticle('featured')">
+                        <i class="fas fa-book-open"></i> Read Now
+                    </button>
+                </div>
+                <div class="featured-items">
+                    <div class="featured-item" onclick="openArticle('ramadan')">
+                        <div class="featured-item-icon">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="featured-item-content">
+                            <h4>Diabetes Management During Ramadan</h4>
+                            <p>Special guidelines for fasting and medication adjustments</p>
+                            <div class="featured-item-meta">
+                                <span><i class="fas fa-clock"></i> 10 min read</span>
+                                <span><i class="fas fa-user-md"></i> Dr. Ahmed Al-Khalifa</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="featured-item" onclick="openArticle('cgm-guide')">
+                        <div class="featured-item-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="featured-item-content">
+                            <h4>CGM Mastery: From Data to Action</h4>
+                            <p>How to use continuous glucose monitor data effectively</p>
+                            <div class="featured-item-meta">
+                                <span><i class="fas fa-clock"></i> 12 min read</span>
+                                <span><i class="fas fa-video"></i> Video Included</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="featured-item" onclick="openArticle('bahrain-diet')">
+                        <div class="featured-item-icon">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="featured-item-content">
+                            <h4>Traditional Bahraini Foods & Diabetes</h4>
+                            <p>Healthy adaptations of local cuisine favorites</p>
+                            <div class="featured-item-meta">
+                                <span><i class="fas fa-clock"></i> 8 min read</span>
+                                <span><i class="fas fa-utensils"></i> 15 Recipes</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Articles Grid -->
+        <section class="articles-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-newspaper"></i> Latest Articles
+                </h2>
+                <button class="view-all-btn" onclick="viewAllArticles()">
+                    <i class="fas fa-list"></i> View All Articles
+                </button>
+            </div>
+            <div class="articles-grid" id="articlesGrid">
+                <!-- Articles will be loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- Learning Paths -->
+        <section class="learning-section">
+            <h2 class="section-title">
+                <i class="fas fa-road"></i> Learning Paths
+            </h2>
+            <div class="learning-path">
+                <div class="path-card">
+                    <div class="path-number">01</div>
+                    <h3 class="path-title">Beginner's Journey</h3>
+                    <p class="path-description">Essential knowledge for newly diagnosed patients. Covering basics, nutrition, and initial lifestyle adjustments.</p>
+                    <div class="path-progress">
+                        <div class="path-progress-bar" style="width: 30%"></div>
+                    </div>
+                    <div class="path-stats">
+                        <span>5 Modules</span>
+                        <span>30% Complete</span>
+                    </div>
+                    <button class="path-btn" onclick="startLearningPath('beginner')">
+                        <i class="fas fa-play"></i> Continue Learning
+                    </button>
+                </div>
+                <div class="path-card">
+                    <div class="path-number">02</div>
+                    <h3 class="path-title">Advanced Management</h3>
+                    <p class="path-description">For those with established diabetes. Deep dive into medication, technology, and complication prevention.</p>
+                    <div class="path-progress">
+                        <div class="path-progress-bar" style="width: 60%"></div>
+                    </div>
+                    <div class="path-stats">
+                        <span>8 Modules</span>
+                        <span>60% Complete</span>
+                    </div>
+                    <button class="path-btn" onclick="startLearningPath('advanced')">
+                        <i class="fas fa-play"></i> Continue Learning
+                    </button>
+                </div>
+                <div class="path-card">
+                    <div class="path-number">03</div>
+                    <h3 class="path-title">Family & Caregivers</h3>
+                    <p class="path-description">Supporting loved ones with diabetes. Learn about emotional support, emergency care, and daily assistance.</p>
+                    <div class="path-progress">
+                        <div class="path-progress-bar" style="width: 10%"></div>
+                    </div>
+                    <div class="path-stats">
+                        <span>4 Modules</span>
+                        <span>10% Complete</span>
+                    </div>
+                    <button class="path-btn" onclick="startLearningPath('caregiver')">
+                        <i class="fas fa-play"></i> Start Learning
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources -->
+        <section class="resources-section">
+            <h2 class="section-title">
+                <i class="fas fa-download"></i> Downloadable Resources
+            </h2>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3 class="resource-title">Meal Planning Templates</h3>
+                    <p class="resource-description">Weekly meal planners, shopping lists, and portion control guides designed for Bahraini diets.</p>
+                    <a href="#" class="resource-download" onclick="downloadResource('meal-plan')">
+                        <i class="fas fa-download"></i> Download PDF
+                    </a>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="resource-title">Glucose Log Sheets</h3>
+                    <p class="resource-description">Printable templates for tracking blood sugar, medications, meals, and physical activity.</p>
+                    <a href="#" class="resource-download" onclick="downloadResource('glucose-log')">
+                        <i class="fas fa-download"></i> Download Pack
+                    </a>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-book-medical"></i>
+                    </div>
+                    <h3 class="resource-title">Medication Guide</h3>
+                    <p class="resource-description">Complete reference guide to diabetes medications available in Bahrain with dosage charts.</p>
+                    <a href="#" class="resource-download" onclick="downloadResource('medication-guide')">
+                        <i class="fas fa-download"></i> Download Guide
+                    </a>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon">
+                        <i class="fas fa-first-aid"></i>
+                    </div>
+                    <h3 class="resource-title">Emergency Protocols</h3>
+                    <p class="resource-description">Step-by-step emergency procedures for hypoglycemia and hyperglycemia situations.</p>
+                    <a href="#" class="resource-download" onclick="downloadResource('emergency')">
+                        <i class="fas fa-download"></i> Download Guide
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="education-footer">
+            <p class="footer-text">
+                <i class="fas fa-shield-alt"></i> All content is reviewed and approved by the Bahrain Diabetes Society Medical Advisory Board
+            </p>
+            <div class="footer-links">
+                <a href="#" class="footer-link" onclick="openPage('about')">
+                    <i class="fas fa-info-circle"></i> About Our Content
+                </a>
+                <a href="#" class="footer-link" onclick="openPage('medical-board')">
+                    <i class="fas fa-user-md"></i> Medical Review Board
+                </a>
+                <a href="#" class="footer-link" onclick="openPage('suggest-topic')">
+                    <i class="fas fa-lightbulb"></i> Suggest a Topic
+                </a>
+                <a href="#" class="footer-link" onclick="openPage('feedback')">
+                    <i class="fas fa-comment-alt"></i> Give Feedback
+                </a>
+                <a href="#" class="footer-link" onclick="openPage('contact')">
+                    <i class="fas fa-envelope"></i> Contact Education Team
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Sample articles data
+        const articles = [
+            {
+                id: 1,
+                title: "Understanding Your HbA1c Test Results",
+                excerpt: "Learn what your HbA1c numbers mean, how they differ from daily glucose readings, and what targets you should aim for based on your individual circumstances.",
+                category: "Monitoring",
+                readTime: "7 min",
+                rating: 4.8,
+                views: "1.2K",
+                author: "Dr. Sarah Wilson",
+                icon: "fas fa-chart-line"
+            },
+            {
+                id: 2,
+                title: "Low-Carb Diet for Type 2 Diabetes",
+                excerpt: "Explore the benefits and practical implementation of a low-carbohydrate diet for managing Type 2 diabetes effectively.",
+                category: "Nutrition",
+                readTime: "12 min",
+                rating: 4.9,
+                views: "3.4K",
+                author: "Maya Hassan, RD",
+                icon: "fas fa-apple-alt"
+            },
+            {
+                id: 3,
+                title: "Insulin Injection Techniques",
+                excerpt: "Master proper insulin injection techniques, rotation sites, and tips to minimize discomfort and maximize absorption.",
+                category: "Medication",
+                readTime: "9 min",
+                rating: 4.7,
+                views: "2.1K",
+                author: "Nurse Fatima Ahmed",
+                icon: "fas fa-syringe"
+            },
+            {
+                id: 4,
+                title: "Exercise Planning for Blood Sugar Control",
+                excerpt: "How to time your workouts, choose the right exercises, and monitor your glucose before, during, and after physical activity.",
+                category: "Lifestyle",
+                readTime: "11 min",
+                rating: 4.6,
+                views: "1.8K",
+                author: "Coach Khalid Mahmoud",
+                icon: "fas fa-running"
+            },
+            {
+                id: 5,
+                title: "Diabetes Technology: Apps & Devices",
+                excerpt: "Review of the best diabetes management apps, connected devices, and how technology can simplify your daily routine.",
+                category: "Technology",
+                readTime: "15 min",
+                rating: 4.9,
+                views: "2.5K",
+                author: "Tech Specialist Ali Rashed",
+                icon: "fas fa-mobile-alt"
+            },
+            {
+                id: 6,
+                title: "Managing Diabetes During Pregnancy",
+                excerpt: "Comprehensive guide for gestational diabetes management, including monitoring, diet, and when to seek medical help.",
+                category: "Complications",
+                readTime: "14 min",
+                rating: 4.8,
+                views: "1.5K",
+                author: "Dr. Leila Al-Sayed",
+                icon: "fas fa-baby"
+            }
+        ];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArticles();
+            animateProgressBars();
+        });
+
+        // Load articles into grid
+        function loadArticles() {
+            const grid = document.getElementById('articlesGrid');
+            grid.innerHTML = articles.map(article => `
+                <div class="article-card" onclick="openArticle(${article.id})">
+                    <div class="article-image">
+                        <div class="article-image-content">
+                            <i class="${article.icon}"></i>
+                        </div>
+                        <span class="article-category">${article.category}</span>
+                    </div>
+                    <div class="article-content">
+                        <h3 class="article-title">${article.title}</h3>
+                        <p class="article-excerpt">${article.excerpt}</p>
+                        <div class="article-footer">
+                            <div class="article-meta">
+                                <span class="article-author">
+                                    <i class="fas fa-user-md"></i> ${article.author}
+                                </span>
+                                <span><i class="fas fa-clock"></i> ${article.readTime}</span>
+                                <span><i class="fas fa-eye"></i> ${article.views}</span>
+                            </div>
+                            <button class="read-btn" onclick="event.stopPropagation(); openArticle(${article.id})">
+                                <i class="fas fa-book-open"></i> Read
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter content by category
+        function filterContent(category) {
+            const tags = document.querySelectorAll('.filter-tag');
+            tags.forEach(tag => tag.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            console.log('Filtering by category:', category);
+            // In a real app, this would filter the articles
+            // For now, we'll just show a message
+            showNotification(`Showing content for: ${category}`);
+        }
+
+        // Search content
+        function searchContent() {
+            const searchTerm = document.getElementById('searchInput').value;
+            if (searchTerm.trim()) {
+                console.log('Searching for:', searchTerm);
+                showNotification(`Search results for: "${searchTerm}"`);
+            }
+        }
+
+        // Sort content
+        function sortContent() {
+            const sortBy = document.getElementById('sortSelect').value;
+            console.log('Sorting by:', sortBy);
+            showNotification(`Sorted by: ${sortBy}`);
+        }
+
+        // Show category
+        function showCategory(category) {
+            console.log('Showing category:', category);
+            showNotification(`Opening category: ${category}`);
+        }
+
+        // Open article
+        function openArticle(articleId) {
+            console.log('Opening article:', articleId);
+            showNotification(`Loading article...`);
+            // In a real app, this would navigate to the article page
+        }
+
+        // View all articles
+        function viewAllArticles() {
+            console.log('Viewing all articles');
+            showNotification('Loading all articles...');
+        }
+
+        // Start learning path
+        function startLearningPath(path) {
+            console.log('Starting learning path:', path);
+            showNotification(`Starting ${path} learning path...`);
+        }
+
+        // Download resource
+        function downloadResource(resource) {
+            console.log('Downloading resource:', resource);
+            showNotification(`Downloading ${resource}...`);
+        }
+
+        // Open page
+        function openPage(page) {
+            console.log('Opening page:', page);
+            showNotification(`Opening ${page} page...`);
+        }
+
+        // Animate progress bars
+        function animateProgressBars() {
+            const progressBars = document.querySelectorAll('.path-progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        }
+
+        // Show notification
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #1565A6 0%, #2196F3 100%);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-info-circle"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Search input handling
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchContent();
+            }
+        });
+    </script>
+</body>
+</html>

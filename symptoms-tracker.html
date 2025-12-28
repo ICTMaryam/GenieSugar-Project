@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symptoms Tracker - GenieSugar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8f0ff 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 25px 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 6px solid #7C3AED;
+        }
+
+        .header-content h1 {
+            color: #1F2937;
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-content p {
+            color: #6B7280;
+            font-size: 15px;
+        }
+
+        .header-icon {
+            font-size: 36px;
+            color: #7C3AED;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #7C3AED 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #7C3AED;
+            border: 2px solid #E5E7EB;
+        }
+
+        .btn-secondary:hover {
+            border-color: #7C3AED;
+            background: #F9FAFB;
+        }
+
+        /* Main Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #7C3AED 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .stat-trend {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #10B98120;
+            color: #10B981;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .trend-up {
+            background: #10B98120;
+            color: #10B981;
+        }
+
+        .trend-down {
+            background: #EF444420;
+            color: #EF4444;
+        }
+
+        /* Sidebar Card */
+        .sidebar-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            height: fit-content;
+            position: sticky;
+            top: 30px;
+        }
+
+        .sidebar-card.expanded {
+            position: relative;
+            top: 0;
+        }
+
+        .card-title {
+            font-size: 22px;
+            color: #1F2937;
+            margin-bottom: 25px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title span {
+            color: #7C3AED;
+            font-size: 24px;
+        }
+
+        /* Symptoms Grid */
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .symptom-card {
+            padding: 20px 15px;
+            background: #F9FAFB;
+            border-radius: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .symptom-card:hover {
+            background: #F0F4FF;
+            transform: translateY(-3px);
+            border-color: #7C3AED;
+        }
+
+        .symptom-card.selected {
+            background: linear-gradient(135deg, #667eea 0%, #7C3AED 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .symptom-card.selected .symptom-icon {
+            transform: scale(1.2);
+        }
+
+        .symptom-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            transition: transform 0.3s;
+        }
+
+        .symptom-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .symptom-desc {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        /* Severity Selector */
+        .severity-selector {
+            margin: 25px 0;
+        }
+
+        .severity-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .severity-label i {
+            color: #7C3AED;
+        }
+
+        .severity-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .severity-option {
+            flex: 1;
+            padding: 18px 10px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .severity-mild {
+            background: #E8F5E9;
+            color: #10B981;
+        }
+
+        .severity-moderate {
+            background: #FFF3E0;
+            color: #F59E0B;
+        }
+
+        .severity-severe {
+            background: #FFEBEE;
+            color: #EF4444;
+        }
+
+        .severity-option:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .severity-option.selected {
+            border-color: currentColor;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            color: #374151;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: #7C3AED;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: #F9FAFB;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #7C3AED;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* History Card */
+        .history-card {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .history-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            color: #6B7280;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: #7C3AED;
+            color: white;
+            border-color: #7C3AED;
+        }
+
+        .filter-btn:hover:not(.active) {
+            border-color: #7C3AED;
+            color: #7C3AED;
+        }
+
+        /* Log Entries */
+        .log-entries {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .log-entry {
+            background: #F9FAFB;
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 4px solid #7C3AED;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .log-entry:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .log-entry.severe {
+            border-left-color: #EF4444;
+            background: linear-gradient(90deg, #FFEBEE 0%, #FFFFFF 100%);
+        }
+
+        .log-entry.moderate {
+            border-left-color: #F59E0B;
+            background: linear-gradient(90deg, #FFF3E0 0%, #FFFFFF 100%);
+        }
+
+        .log-entry.mild {
+            border-left-color: #10B981;
+            background: linear-gradient(90deg, #E8F5E9 0%, #FFFFFF 100%);
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .log-date-time {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .log-date {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .log-time {
+            font-size: 14px;
+            color: #6B7280;
+            background: #E5E7EB;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .log-severity {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+
+        .severity-mild-badge {
+            background: #10B98120;
+            color: #10B981;
+        }
+
+        .severity-moderate-badge {
+            background: #F59E0B20;
+            color: #F59E0B;
+        }
+
+        .severity-severe-badge {
+            background: #EF444420;
+            color: #EF4444;
+        }
+
+        .log-symptoms {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .symptom-tag {
+            padding: 8px 16px;
+            background: white;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #7C3AED;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .log-notes {
+            font-size: 15px;
+            color: #6B7280;
+            line-height: 1.6;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            margin-top: 15px;
+            border-left: 3px solid #7C3AED;
+        }
+
+        .log-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 10px;
+        }
+
+        .btn-edit {
+            background: #F0F4FF;
+            color: #7C3AED;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background: #E5E9FF;
+        }
+
+        .btn-delete {
+            background: #FFEBEE;
+            color: #EF4444;
+            border: none;
+        }
+
+        .btn-delete:hover {
+            background: #FFD1D9;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 40px;
+            color: #9CA3AF;
+        }
+
+        .empty-state-icon {
+            font-size: 72px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state-subtext {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        /* Custom Symptoms */
+        .custom-symptoms {
+            margin-top: 20px;
+        }
+
+        .add-custom-btn {
+            width: 100%;
+            padding: 15px;
+            background: #F9FAFB;
+            border: 2px dashed #D1D5DB;
+            border-radius: 12px;
+            color: #6B7280;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .add-custom-btn:hover {
+            border-color: #7C3AED;
+            color: #7C3AED;
+            background: #F0F4FF;
+        }
+
+        .custom-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .custom-input-group input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar-card {
+                position: relative;
+                top: 0;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .symptoms-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .severity-options {
+                flex-direction: column;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .history-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .filter-options {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .log-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .symptoms-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .header, .history-card, .sidebar-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <h1>
+                    <span class="header-icon">🩺</span>
+                    Symptoms Tracker
+                </h1>
+                <p>Monitor and track your symptoms to better understand your health patterns</p>
+            </div>
+            <button class="btn btn-primary" onclick="toggleLogForm()">
+                <i class="fas fa-plus-circle"></i>
+                Log Symptoms
+            </button>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalLogs">18</div>
+                    <div class="stat-label">Total Logs This Month</div>
+                    <div class="stat-trend trend-down">↓ 12% from last month</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="mostCommon">Fatigue</div>
+                    <div class="stat-label">Most Common Symptom</div>
+                    <div class="stat-trend trend-up">↑ 8 occurrences</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="avgSeverity">2.4</div>
+                    <div class="stat-label">Average Severity (1-3)</div>
+                    <div class="stat-trend trend-up">↑ Improving</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-grid">
+            <!-- Log Form Sidebar -->
+            <div class="sidebar-card" id="logFormCard">
+                <div class="card-title">
+                    <span>📝</span> Log New Symptoms
+                    <button class="btn-secondary btn-small" onclick="toggleLogForm()" style="padding: 8px 16px;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="symptoms-grid" id="symptomsGrid">
+                    <!-- Symptoms will be populated by JavaScript -->
+                </div>
+
+                <!-- Custom Symptom Input -->
+                <div class="custom-symptoms">
+                    <button class="add-custom-btn" onclick="showCustomInput()">
+                        <i class="fas fa-plus"></i>
+                        Add Custom Symptom
+                    </button>
+                    <div class="custom-input-group" id="customInput" style="display: none;">
+                        <input type="text" id="customSymptom" placeholder="e.g., Muscle cramps" class="form-input">
+                        <button class="btn btn-primary" onclick="addCustomSymptom()">Add</button>
+                    </div>
+                </div>
+
+                <div class="severity-selector">
+                    <label class="severity-label">
+                        <i class="fas fa-chart-bar"></i>
+                        Severity Level
+                    </label>
+                    <div class="severity-options">
+                        <div class="severity-option severity-mild" onclick="selectSeverity(this, 'mild')">
+                            <i class="fas fa-smile"></i>
+                            Mild
+                        </div>
+                        <div class="severity-option severity-moderate" onclick="selectSeverity(this, 'moderate')">
+                            <i class="fas fa-meh"></i>
+                            Moderate
+                        </div>
+                        <div class="severity-option severity-severe" onclick="selectSeverity(this, 'severe')">
+                            <i class="fas fa-frown"></i>
+                            Severe
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-clock"></i>
+                        When did this occur?
+                    </label>
+                    <input type="datetime-local" class="form-input" id="symptomTime">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-sticky-note"></i>
+                        Additional Notes
+                    </label>
+                    <textarea class="form-textarea" id="symptomNotes" 
+                        placeholder="Describe your symptoms, what you were doing, recent meals, blood sugar levels, etc..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="saveSymptomLog()">
+                        <i class="fas fa-save"></i>
+                        Save Log Entry
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearForm()">
+                        <i class="fas fa-redo"></i>
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div class="history-card">
+                <div class="history-header">
+                    <div class="history-title">
+                        <i class="fas fa-history"></i>
+                        Symptom History
+                    </div>
+                    <div class="filter-options">
+                        <button class="filter-btn active" onclick="filterLogs('all')">All</button>
+                        <button class="filter-btn" onclick="filterLogs('today')">Today</button>
+                        <button class="filter-btn" onclick="filterLogs('week')">This Week</button>
+                        <button class="filter-btn" onclick="filterLogs('severe')">Severe Only</button>
+                    </div>
+                </div>
+
+                <div class="log-entries" id="symptomHistory">
+                    <!-- Log entries will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize symptom data
+        const symptoms = [
+            { id: 'fatigue', name: 'Fatigue', emoji: '😴', desc: 'Unusual tiredness' },
+            { id: 'headache', name: 'Headache', emoji: '🤕', desc: 'Head pain' },
+            { id: 'dizziness', name: 'Dizziness', emoji: '😵', desc: 'Feeling lightheaded' },
+            { id: 'nausea', name: 'Nausea', emoji: '🤢', desc: 'Upset stomach' },
+            { id: 'thirst', name: 'Excessive Thirst', emoji: '🥤', desc: 'Constant dry mouth' },
+            { id: 'vision', name: 'Blurred Vision', emoji: '👓', desc: 'Vision problems' },
+            { id: 'shaking', name: 'Shaking/Tremors', emoji: '🤝', desc: 'Hand tremors' },
+            { id: 'sweating', name: 'Sweating', emoji: '💦', desc: 'Unusual sweating' },
+            { id: 'hunger', name: 'Hunger', emoji: '🍽️', desc: 'Constant hunger' },
+            { id: 'confusion', name: 'Confusion', emoji: '😕', desc: 'Mental fog' },
+            { id: 'irritability', name: 'Irritability', emoji: '😤', desc: 'Mood changes' },
+            { id: 'palpitations', name: 'Heart Palpitations', emoji: '💓', desc: 'Racing heart' }
+        ];
+
+        const symptomLogs = [
+            {
+                id: 1,
+                date: '2024-11-24',
+                time: '08:30',
+                symptoms: ['fatigue', 'headache'],
+                severity: 'mild',
+                notes: 'Felt tired after waking up. Slight headache before breakfast. Blood sugar: 95 mg/dL.',
+                bloodSugar: '95'
+            },
+            {
+                id: 2,
+                date: '2024-11-23',
+                time: '15:15',
+                symptoms: ['dizziness', 'sweating'],
+                severity: 'moderate',
+                notes: 'Sudden dizziness after standing up. Blood sugar was low (68 mg/dL). Had orange juice.',
+                bloodSugar: '68'
+            },
+            {
+                id: 3,
+                date: '2024-11-22',
+                time: '11:00',
+                symptoms: ['thirst'],
+                severity: 'mild',
+                notes: 'Increased thirst throughout the morning. Drank 3 liters of water.',
+                bloodSugar: '110'
+            },
+            {
+                id: 4,
+                date: '2024-11-21',
+                time: '19:45',
+                symptoms: ['shaking', 'sweating', 'dizziness'],
+                severity: 'severe',
+                notes: 'Hypoglycemia episode. Had juice immediately. Blood sugar recovered to 85 mg/dL.',
+                bloodSugar: '85'
+            },
+            {
+                id: 5,
+                date: '2024-11-20',
+                time: '14:20',
+                symptoms: ['hunger', 'irritability'],
+                severity: 'moderate',
+                notes: 'Extreme hunger before lunch. Felt irritable. Blood sugar: 75 mg/dL.',
+                bloodSugar: '75'
+            },
+            {
+                id: 6,
+                date: '2024-11-19',
+                time: '10:00',
+                symptoms: ['vision'],
+                severity: 'mild',
+                notes: 'Slight blurriness when reading. Blood sugar: 140 mg/dL.',
+                bloodSugar: '140'
+            }
+        ];
+
+        let selectedSymptoms = new Set();
+        let selectedSeverity = null;
+        let customSymptoms = [];
+        let isFormVisible = true;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderSymptomsGrid();
+            renderLogHistory();
+            updateStats();
+            setCurrentTime();
+            
+            // Auto-hide form on mobile
+            if (window.innerWidth < 768) {
+                toggleLogForm();
+            }
+        });
+
+        // Render symptoms grid
+        function renderSymptomsGrid() {
+            const grid = document.getElementById('symptomsGrid');
+            grid.innerHTML = '';
+            
+            // Add predefined symptoms
+            symptoms.forEach(symptom => {
+                const card = document.createElement('div');
+                card.className = 'symptom-card';
+                card.dataset.id = symptom.id;
+                card.innerHTML = `
+                    <div class="symptom-icon">${symptom.emoji}</div>
+                    <div class="symptom-name">${symptom.name}</div>
+                    <div class="symptom-desc">${symptom.desc}</div>
+                `;
+                card.onclick = () => toggleSymptom(card, symptom.id);
+                grid.appendChild(card);
+            });
+            
+            // Add custom symptoms
+            customSymptoms.forEach(symptom => {
+                const card = document.createElement('div');
+                card.className = 'symptom-card';
+                card.dataset.id = symptom.id;
+                card.innerHTML = `
+                    <div class="symptom-icon">${symptom.emoji || '⚠️'}</div>
+                    <div class="symptom-name">${symptom.name}</div>
+                `;
+                card.onclick = () => toggleSymptom(card, symptom.id);
+                grid.appendChild(card);
+            });
+        }
+
+        // Toggle symptom selection
+        function toggleSymptom(element, symptomId) {
+            if (selectedSymptoms.has(symptomId)) {
+                selectedSymptoms.delete(symptomId);
+                element.classList.remove('selected');
+            } else {
+                selectedSymptoms.add(symptomId);
+                element.classList.add('selected');
+            }
+        }
+
+        // Select severity
+        function selectSeverity(element, severity) {
+            document.querySelectorAll('.severity-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            selectedSeverity = severity;
+        }
+
+        // Toggle log form visibility
+        function toggleLogForm() {
+            const formCard = document.getElementById('logFormCard');
+            isFormVisible = !isFormVisible;
+            formCard.style.display = isFormVisible ? 'block' : 'none';
+        }
+
+        // Set current time
+        function setCurrentTime() {
+            const now = new Date();
+            const dateStr = now.toISOString().slice(0, 16);
+            document.getElementById('symptomTime').value = dateStr;
+        }
+
+        // Save symptom log
+        function saveSymptomLog() {
+            if (selectedSymptoms.size === 0) {
+                alert('Please select at least one symptom');
+                return;
+            }
+
+            if (!selectedSeverity) {
+                alert('Please select a severity level');
+                return;
+            }
+
+            const timeInput = document.getElementById('symptomTime').value;
+            const notes = document.getElementById('symptomNotes').value;
+            
+            if (!timeInput) {
+                alert('Please select when the symptoms occurred');
+                return;
+            }
+
+            const [date, time] = timeInput.split('T');
+            
+            const newLog = {
+                id: Date.now(),
+                date: date,
+                time: time.slice(0, 5),
+                symptoms: Array.from(selectedSymptoms),
+                severity: selectedSeverity,
+                notes: notes || 'No additional notes'
+            };
+
+            // Add to beginning of array
+            symptomLogs.unshift(newLog);
+            
+            // Update UI
+            renderLogHistory();
+            updateStats();
+            clearForm();
+            
+            // Show success message
+            showNotification('Symptom log saved successfully!', 'success');
+        }
+
+        // Clear form
+        function clearForm() {
+            selectedSymptoms.clear();
+            selectedSeverity = null;
+            
+            document.querySelectorAll('.symptom-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.severity-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            document.getElementById('symptomNotes').value = '';
+            setCurrentTime();
+        }
+
+        // Show custom symptom input
+        function showCustomInput() {
+            document.getElementById('customInput').style.display = 'flex';
+            document.getElementById('customSymptom').focus();
+        }
+
+        // Add custom symptom
+        function addCustomSymptom() {
+            const input = document.getElementById('customSymptom');
+            const name = input.value.trim();
+            
+            if (!name) {
+                alert('Please enter a symptom name');
+                return;
+            }
+
+            const customSymptom = {
+                id: 'custom-' + Date.now(),
+                name: name,
+                emoji: '⚠️'
+            };
+
+            customSymptoms.push(customSymptom);
+            renderSymptomsGrid();
+            
+            input.value = '';
+            document.getElementById('customInput').style.display = 'none';
+            
+            showNotification('Custom symptom added!', 'success');
+        }
+
+        // Filter logs
+        function filterLogs(filter) {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            let filteredLogs = [...symptomLogs];
+            
+            const now = new Date();
+            const today = now.toISOString().split('T')[0];
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+                .toISOString().split('T')[0];
+            
+            switch(filter) {
+                case 'today':
+                    filteredLogs = symptomLogs.filter(log => log.date === today);
+                    break;
+                case 'week':
+                    filteredLogs = symptomLogs.filter(log => log.date >= weekAgo);
+                    break;
+                case 'severe':
+                    filteredLogs = symptomLogs.filter(log => log.severity === 'severe');
+                    break;
+            }
+            
+            renderLogHistory(filteredLogs);
+        }
+
+        // Render log history
+        function renderLogHistory(logs = symptomLogs) {
+            const historyContainer = document.getElementById('symptomHistory');
+            
+            if (logs.length === 0) {
+                historyContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <div class="empty-state-text">No symptom logs found</div>
+                        <div class="empty-state-subtext">Try logging your first symptom to track your health patterns</div>
+                        <button class="btn btn-primary" onclick="toggleLogForm()" style="margin-top: 20px;">
+                            <i class="fas fa-plus-circle"></i>
+                            Log First Symptom
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            historyContainer.innerHTML = '';
+            
+            logs.forEach(log => {
+                const logElement = document.createElement('div');
+                logElement.className = `log-entry ${log.severity}`;
+                
+                // Format date
+                const date = new Date(log.date);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+                
+                // Get symptom names
+                const symptomNames = log.symptoms.map(symptomId => {
+                    const symptom = [...symptoms, ...customSymptoms].find(s => s.id === symptomId);
+                    return symptom ? symptom.name : symptomId;
+                });
+                
+                logElement.innerHTML = `
+                    <div class="log-header">
+                        <div class="log-date-time">
+                            <div class="log-date">${formattedDate}</div>
+                            <div class="log-time">${log.time}</div>
+                        </div>
+                        <div class="log-severity ${log.severity}-badgsevere-badgseverity-${log.severity}-badge">
+                            ${log.severity.charAt(0).toUpperCase() + log.severity.slice(1)}
+                        </div>
+                    </div>
+                    <div class="log-symptoms">
+                        ${symptomNames.map(name => `
+                            <div class="symptom-tag">
+                                <i class="fas fa-chevron-right"></i>
+                                ${name}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="log-notes">
+                        <strong><i class="fas fa-sticky-note"></i> Notes:</strong> ${log.notes}
+                    </div>
+                    <div class="log-actions">
+                        <button class="btn-edit btn-small" onclick="editLog(${log.id})">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn-delete btn-small" onclick="deleteLog(${log.id})">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                    </div>
+                `;
+                
+                historyContainer.appendChild(logElement);
+            });
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalLogs').textContent = symptomLogs.length;
+            
+            // Find most common symptom
+            const symptomCounts = {};
+            symptomLogs.forEach(log => {
+                log.symptoms.forEach(symptom => {
+                    symptomCounts[symptom] = (symptomCounts[symptom] || 0) + 1;
+                });
+            });
+            
+            let mostCommon = 'None';
+            let maxCount = 0;
+            
+            Object.entries(symptomCounts).forEach(([symptom, count]) => {
+                if (count > maxCount) {
+                    maxCount = count;
+                    const symptomObj = [...symptoms, ...customSymptoms].find(s => s.id === symptom);
+                    mostCommon = symptomObj ? symptomObj.name : symptom;
+                }
+            });
+            
+            document.getElementById('mostCommon').textContent = mostCommon;
+            
+            // Calculate average severity
+            const severityValues = { mild: 1, moderate: 2, severe: 3 };
+            const avgSeverity = symptomLogs.length > 0 
+                ? (symptomLogs.reduce((sum, log) => sum + severityValues[log.severity], 0) / symptomLogs.length).toFixed(1)
+                : '0.0';
+            document.getElementById('avgSeverity').textContent = avgSeverity;
+        }
+
+        // Edit log
+        function editLog(logId) {
+            const log = symptomLogs.find(l => l.id === logId);
+            if (!log) return;
+            
+            // Fill form with log data
+            selectedSymptoms = new Set(log.symptoms);
+            selectedSeverity = log.severity;
+            
+            // Update UI
+            renderSymptomsGrid();
+            document.querySelectorAll('.symptom-card').forEach(card => {
+                if (selectedSymptoms.has(card.dataset.id)) {
+                    card.classList.add('selected');
+                }
+            });
+            
+            document.querySelectorAll('.severity-option').forEach(opt => {
+                if (opt.classList.contains(`severity-${log.severity}`)) {
+                    opt.classList.add('selected');
+                }
+            });
+            
+            document.getElementById('symptomTime').value = `${log.date}T${log.time}:00`;
+            document.getElementById('symptomNotes').value = log.notes;
+            
+            // Scroll to form
+            document.getElementById('logFormCard').style.display = 'block';
+            document.getElementById('logFormCard').scrollIntoView({ behavior: 'smooth' });
+            
+            showNotification('Edit your log entry', 'info');
+        }
+
+        // Delete log
+        function deleteLog(logId) {
+            if (confirm('Are you sure you want to delete this log entry?')) {
+                const index = symptomLogs.findIndex(log => log.id === logId);
+                if (index !== -1) {
+                    symptomLogs.splice(index, 1);
+                    renderLogHistory();
+                    updateStats();
+                    showNotification('Log entry deleted', 'success');
+                }
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#7C3AED'};
+                color: white;
+                border-radius: 10px;
+                font-weight: 600;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
