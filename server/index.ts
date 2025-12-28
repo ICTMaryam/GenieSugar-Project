@@ -1,4 +1,7 @@
-import 'dotenv/config';
+console.log("SERVER STARTING ON AZURE");
+if (process.env.NODE_ENV !== "production") {
+  await import("dotenv/config");
+}
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
